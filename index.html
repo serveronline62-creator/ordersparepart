@@ -67,18 +67,16 @@
     .auth-tab { flex: 1; padding: 9px 0; text-align: center; border-radius: 8px; font-size: 0.82rem; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: all 0.3s ease; border: none; background: none; font-family: inherit; }
     .auth-tab.active { background: var(--accent); color: #0b1120; box-shadow: 0 0 16px rgba(0,212,170,0.25); }
     [data-theme="light"] .auth-tab.active { color: #fff; }
-    .auth-tab:not(.active):hover { color: var(--text-secondary); }
     .auth-form { display: none; flex-direction: column; gap: 1rem; }
     .auth-form.active { display: flex; animation: afFade 0.3s ease-out; }
     @keyframes afFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .auth-form .fg { display: flex; flex-direction: column; gap: 5px; }
     .auth-form .fl { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); }
-    .auth-form .fl .rq { color: var(--danger); }
+    .auth-form .rq { color: var(--danger); }
     .auth-form .fi { background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius); padding: 11px 14px; font-size: 0.88rem; font-family: inherit; color: var(--text-primary); transition: all 0.3s ease; outline: none; width: 100%; }
     .auth-form .fi:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--accent-dim); }
     .auth-form .fi::placeholder { color: var(--text-muted); }
-    .aiw { position: relative; }
-    .aiw .fi { padding-right: 44px; }
+    .aiw { position: relative; } .aiw .fi { padding-right: 44px; }
     .aiw .tpw { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; padding: 4px; transition: color 0.2s; }
     .aiw .tpw:hover { color: var(--accent); }
     .abtn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px 24px; border-radius: var(--radius); border: none; font-family: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; background: linear-gradient(135deg, var(--accent), #00a88a); color: #0b1120; box-shadow: 0 0 24px rgba(0,212,170,0.25); margin-top: 0.25rem; }
@@ -101,11 +99,14 @@
     .user-btn:hover { border-color: var(--accent); color: var(--text-primary); }
     .user-avatar { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), #00a88a); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 800; color: #0b1120; flex-shrink: 0; }
     [data-theme="light"] .user-avatar { color: #fff; }
-    .user-dropdown { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); min-width: 220px; z-index: 200; overflow: hidden; animation: afFade 0.2s ease-out; }
+    .user-dropdown { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); min-width: 240px; z-index: 200; overflow: hidden; animation: afFade 0.2s ease-out; }
     .user-dropdown.show { display: block; }
     .udh { padding: 14px 16px; border-bottom: 1px solid var(--border); }
-    .udh .udn { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); word-break: break-all; }
-    .udh .ude { font-size: 0.72rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; word-break: break-all; margin-top: 2px; }
+    .udn { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); word-break: break-all; display: flex; align-items: center; gap: 8px; }
+    .role-badge { font-size: 0.6rem; font-weight: 800; padding: 2px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .role-badge.admin { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+    .role-badge.user { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+    .ude { font-size: 0.72rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; word-break: break-all; margin-top: 2px; }
     .udi { display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: 0.82rem; color: var(--text-secondary); cursor: pointer; transition: all 0.2s ease; border: none; background: none; width: 100%; text-align: left; font-family: inherit; font-weight: 500; }
     .udi:hover { background: var(--row-hover); color: var(--text-primary); }
     .udi.danger { color: var(--danger); } .udi.danger:hover { background: rgba(239,68,68,0.08); }
@@ -133,9 +134,9 @@
     [data-theme="light"] .theme-toggle .icon-sun { transform: translateY(0) rotate(0deg); opacity: 1; } [data-theme="light"] .theme-toggle .icon-moon { transform: translateY(-40px) rotate(-90deg); opacity: 0; }
     .main-container { position: relative; z-index: 1; max-width: 1500px; margin: 0 auto; padding: 2rem; }
 
-    /* ====== MAIN TABS (Order Aktif / Riwayat) ====== */
+    /* MAIN TABS */
     .main-tabs { display: flex; gap: 4px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 5px; margin-bottom: 1.5rem; width: fit-content; }
-    .main-tab { display: flex; align-items: center; gap: 10px; padding: 10px 24px; border-radius: 9px; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: all 0.3s ease; border: none; background: none; font-family: inherit; position: relative; }
+    .main-tab { display: flex; align-items: center; gap: 10px; padding: 10px 24px; border-radius: 9px; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: all 0.3s ease; border: none; background: none; font-family: inherit; }
     .main-tab:hover { color: var(--text-secondary); }
     .main-tab.active { background: var(--accent); color: #0b1120; box-shadow: 0 0 20px rgba(0,212,170,0.25); }
     [data-theme="light"] .main-tab.active { color: #fff; }
@@ -155,9 +156,14 @@
     .riwayat-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
     .riwayat-stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.1rem; display: flex; align-items: center; gap: 0.85rem; transition: all 0.3s ease; }
     .riwayat-stat:hover { border-color: var(--info); box-shadow: 0 0 20px rgba(59,130,246,0.08); transform: translateY(-2px); }
-    .riwayat-stat .rs-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; background: rgba(59,130,246,0.12); color: var(--info); }
-    .riwayat-stat .rs-val { font-size: 1.4rem; font-weight: 800; line-height: 1; font-family: 'JetBrains Mono', monospace; color: var(--info); }
-    .riwayat-stat .rs-lbl { font-size: 0.65rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+    .rs-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; background: rgba(59,130,246,0.12); color: var(--info); }
+    .rs-val { font-size: 1.4rem; font-weight: 800; line-height: 1; font-family: 'JetBrains Mono', monospace; color: var(--info); }
+    .rs-lbl { font-size: 0.65rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+    
+    /* LOCKED BANNER */
+    .locked-banner { display: flex; align-items: center; gap: 12px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); border-radius: var(--radius); padding: 12px 18px; margin-bottom: 1rem; font-size: 0.82rem; color: #fbbf24; font-weight: 500; }
+    [data-theme="light"] .locked-banner { color: #d97706; background: rgba(217,119,6,0.06); border-color: rgba(217,119,6,0.2); }
+    .locked-banner i { font-size: 1rem; flex-shrink: 0; }
 
     /* FORM */
     .form-section-title { font-size: 0.75rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.85rem; margin-top: 0.25rem; display: flex; align-items: center; gap: 8px; }
@@ -200,6 +206,8 @@
     .data-table tbody td.editable-cell { position: relative; cursor: pointer; }
     .data-table tbody td.editable-cell::after { content: '\f304'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 0.55rem; color: var(--accent); opacity: 0; position: absolute; top: 4px; right: 4px; transition: opacity 0.2s; }
     .data-table tbody td.editable-cell:hover::after { opacity: 0.7; } .data-table tbody td.editable-cell:hover { color: var(--accent); }
+    .data-table tbody td.locked-cell { cursor: default !important; color: var(--text-muted) !important; opacity: 0.7; }
+    .data-table tbody td.locked-cell::after { display: none; }
     .data-table tbody tr.new-row { background: var(--new-row-bg) !important; animation: rowHL 4s ease-out forwards; }
     @keyframes rowHL { 0% { background: var(--accent-dim) !important; box-shadow: inset 3px 0 0 var(--accent); } 100% { background: transparent !important; box-shadow: none; } }
     .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: 0.3px; }
@@ -209,7 +217,7 @@
     .status-badge.finish { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); } [data-theme="light"] .status-badge.finish { color: #2563eb; }
     .status-dot { width: 6px; height: 6px; border-radius: 50%; } .status-badge.pending .status-dot { background: #f87171; } .status-badge.proses .status-dot { background: #c084fc; } .status-badge.ready .status-dot { background: #fbbf24; } .status-badge.finish .status-dot { background: #60a5fa; }
     .action-btns { display: flex; gap: 5px; } .action-btn { width: 28px; height: 28px; border-radius: 7px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; font-size: 0.7rem; }
-    .action-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); } .action-btn.delete:hover { border-color: var(--danger); color: var(--danger); background: rgba(239,68,68,0.1); } .action-btn.delete.disabled-delete { opacity: 0.25; cursor: not-allowed; pointer-events: none; }
+    .action-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); } .action-btn.delete:hover { border-color: var(--danger); color: var(--danger); background: rgba(239,68,68,0.1); } .action-btn.locked { opacity: 0.2; cursor: not-allowed; pointer-events: none; }
     .table-loading-skeleton { padding: 2rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
     .skeleton-row { display: flex; gap: 1rem; width: 100%; } .skeleton-cell { height: 14px; border-radius: 4px; background: linear-gradient(90deg, var(--border) 25%, rgba(128,128,128,0.15) 50%, var(--border) 75%); background-size: 200% 100%; animation: shimmer 1.5s ease-in-out infinite; }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
@@ -281,7 +289,7 @@
         <div class="user-menu" id="userMenu">
           <button class="user-btn" onclick="toggleUserDD()"><div class="user-avatar" id="userAvatar">?</div><span class="ub-name" id="userName">User</span><i class="fas fa-chevron-down" style="font-size:0.6rem;margin-left:2px;"></i></button>
           <div class="user-dropdown" id="userDropdown">
-            <div class="udh"><div class="udn" id="udName">User</div><div class="ude" id="udEmail">-</div></div>
+            <div class="udh"><div class="udn" id="udName">User <span class="role-badge user" id="udRole">USER</span></div><div class="ude" id="udEmail">-</div></div>
             <button class="udi danger" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Keluar</button>
           </div>
         </div>
@@ -289,7 +297,6 @@
     </div></nav>
 
     <main class="main-container">
-      <!-- MAIN TABS -->
       <div class="main-tabs">
         <button class="main-tab active" onclick="switchMainTab('aktif', this)"><i class="fas fa-tasks"></i> Order Aktif <span class="tab-count" id="tabCountAktif">0</span></button>
         <button class="main-tab" onclick="switchMainTab('riwayat', this)"><i class="fas fa-history"></i> Riwayat Order <span class="tab-count" id="tabCountRiwayat">0</span></button>
@@ -316,6 +323,7 @@
 
       <!-- TAB 2: RIWAYAT ORDER -->
       <div class="tab-panel" id="panelRiwayat">
+        <div class="locked-banner" id="lockedBanner" style="display:none;"><i class="fas fa-lock"></i><span>Akses terbatas. Hanya <strong>Admin</strong> yang dapat mengubah atau menghapus data riwayat order.</span></div>
         <div class="riwayat-stats">
           <div class="riwayat-stat"><div class="rs-icon"><i class="fas fa-check-double"></i></div><div><div class="rs-val" id="statRiwayat">0</div><div class="rs-lbl">Total Selesai</div></div></div>
         </div>
@@ -394,6 +402,12 @@
     const db = firebase.firestore(), auth = firebase.auth(), ORDERS_COL = 'orders';
 
     /* ================================================================
+       ROLE SYSTEM — Admin cek berdasarkan email
+       ================================================================ */
+    const ADMIN_EMAIL = 'admin@app.local';
+    let isAdmin = false;
+
+    /* ================================================================
        INDEXEDDB CACHE
        ================================================================ */
     const CACHE_DB='OrderKomponenCache', CACHE_STORE='orders';
@@ -410,7 +424,6 @@
         searchDebounceTimer=null, searchRiwayatTimer=null,
         isFirstLoad=true, realtimeUnsubscribe=null, currentMainTab='aktif';
 
-    /* Filter data: aktif = bukan FINISH, riwayat = FINISH */
     function getAktifOrders(){return allOrders.filter(function(o){return(o['STATUS']||'').toUpperCase()!=='FINISH';});}
     function getRiwayatOrders(){return allOrders.filter(function(o){return(o['STATUS']||'').toUpperCase()==='FINISH';});}
 
@@ -423,34 +436,41 @@
     function handleLogin(e){e.preventDefault();hideAuthErr();var em=document.getElementById('loginEmail').value.trim(),pw=document.getElementById('loginPassword').value;if(!em||!pw){showAuthErr('Email dan password wajib diisi.');return;}var b=document.getElementById('loginBtn');b.disabled=true;b.innerHTML='<div class="spinner"></div> Memproses...';auth.signInWithEmailAndPassword(em,pw).then(function(){b.disabled=false;b.innerHTML='<i class="fas fa-sign-in-alt"></i> Masuk';}).catch(function(er){b.disabled=false;b.innerHTML='<i class="fas fa-sign-in-alt"></i> Masuk';var m='Login gagal.';if(er.code==='auth/user-not-found')m='Email tidak terdaftar.';else if(er.code==='auth/wrong-password'||er.code==='auth/invalid-credential')m='Email atau password salah.';else if(er.code==='auth/invalid-email')m='Format email tidak valid.';else if(er.code==='auth/too-many-requests')m='Terlalu banyak percobaan. Coba lagi nanti.';else m=er.message;showAuthErr(m);});}
     function handleRegister(e){e.preventDefault();hideAuthErr();var n=document.getElementById('regName').value.trim(),em=document.getElementById('regEmail').value.trim(),pw=document.getElementById('regPassword').value,cf=document.getElementById('regConfirm').value;if(!n){showAuthErr('Nama wajib diisi.');return;}if(!em){showAuthErr('Email wajib diisi.');return;}if(pw.length<6){showAuthErr('Password minimal 6 karakter.');return;}if(pw!==cf){showAuthErr('Konfirmasi password tidak cocok.');return;}var b=document.getElementById('registerBtn');b.disabled=true;b.innerHTML='<div class="spinner"></div> Mendaftar...';auth.createUserWithEmailAndPassword(em,pw).then(function(c){return c.user.updateProfile({displayName:n});}).then(function(){b.disabled=false;b.innerHTML='<i class="fas fa-user-plus"></i> Daftar';showToast('Pendaftaran berhasil!','success');}).catch(function(er){b.disabled=false;b.innerHTML='<i class="fas fa-user-plus"></i> Daftar';var m='Gagal.';if(er.code==='auth/email-already-in-use')m='Email sudah terdaftar.';else if(er.code==='auth/weak-password')m='Password terlalu lemah.';else m=er.message;showAuthErr(m);});}
     function handleForgotPassword(){hideAuthErr();var em=document.getElementById('loginEmail').value.trim();if(!em){showAuthErr('Masukkan email dulu, lalu klik "Lupa password?".');return;}var b=document.getElementById('loginBtn');b.disabled=true;b.innerHTML='<div class="spinner"></div> Mengirim...';auth.sendPasswordResetEmail(em).then(function(){b.disabled=false;b.innerHTML='<i class="fas fa-sign-in-alt"></i> Masuk';showToast('Link reset dikirim ke '+em,'success');}).catch(function(er){b.disabled=false;b.innerHTML='<i class="fas fa-sign-in-alt"></i> Masuk';showAuthErr(er.code==='auth/user-not-found'?'Email tidak terdaftar.':er.message);});}
-    function handleLogout(){closeUserDD();if(realtimeUnsubscribe){realtimeUnsubscribe();realtimeUnsubscribe=null;}auth.signOut().then(function(){allOrders=[];newRowIndices.clear();isFirstLoad=true;document.getElementById('tableBody').innerHTML='';document.getElementById('riwayatBody').innerHTML='';document.getElementById('dataTableEl').style.display='none';document.getElementById('riwayatTableEl').style.display='none';document.getElementById('tableSkeleton').style.display='flex';document.getElementById('emptyState').style.display='none';document.getElementById('tableFooter').style.display='none';document.getElementById('emptyRiwayat').style.display='none';document.getElementById('riwayatFooter').style.display='none';['statTotal','statPending','statProses','statReady','statRiwayat','tabCountAktif','tabCountRiwayat'].forEach(function(id){document.getElementById(id).textContent='0';});document.getElementById('loginForm').reset();document.getElementById('registerForm').reset();document.getElementById('pwStrBar').style.width='0';document.getElementById('pwStrTxt').textContent='';switchAuthTab('login',document.querySelector('.auth-tab'));showToast('Berhasil keluar.','info');});}
+    function handleLogout(){closeUserDD();if(realtimeUnsubscribe){realtimeUnsubscribe();realtimeUnsubscribe=null;}auth.signOut().then(function(){allOrders=[];newRowIndices.clear();isFirstLoad=true;isAdmin=false;document.getElementById('tableBody').innerHTML='';document.getElementById('riwayatBody').innerHTML='';document.getElementById('dataTableEl').style.display='none';document.getElementById('riwayatTableEl').style.display='none';document.getElementById('tableSkeleton').style.display='flex';document.getElementById('emptyState').style.display='none';document.getElementById('tableFooter').style.display='none';document.getElementById('emptyRiwayat').style.display='none';document.getElementById('riwayatFooter').style.display='none';document.getElementById('lockedBanner').style.display='none';['statTotal','statPending','statProses','statReady','statRiwayat','tabCountAktif','tabCountRiwayat'].forEach(function(id){document.getElementById(id).textContent='0';});document.getElementById('loginForm').reset();document.getElementById('registerForm').reset();document.getElementById('pwStrBar').style.width='0';document.getElementById('pwStrTxt').textContent='';switchAuthTab('login',document.querySelector('.auth-tab'));showToast('Berhasil keluar.','info');});}
     function togglePwVis(id,b){var i=document.getElementById(id),c=b.querySelector('i');if(i.type==='password'){i.type='text';c.className='fas fa-eye-slash';}else{i.type='password';c.className='fas fa-eye';}}
     function checkPwStr(pw){var bar=document.getElementById('pwStrBar'),txt=document.getElementById('pwStrTxt');if(!pw){bar.style.width='0';txt.textContent='';return;}var s=0;if(pw.length>=6)s++;if(pw.length>=10)s++;if(/[A-Z]/.test(pw))s++;if(/[0-9]/.test(pw))s++;if(/[^A-Za-z0-9]/.test(pw))s++;var l=[{w:'20%',c:'#ef4444',t:'Sangat lemah'},{w:'40%',c:'#f97316',t:'Lemah'},{w:'60%',c:'#eab308',t:'Cukup'},{w:'80%',c:'#22c55e',t:'Kuat'},{w:'100%',c:'#10b981',t:'Sangat kuat'}];var v=l[Math.min(s,4)];bar.style.width=v.w;bar.style.background=v.c;txt.textContent=v.t;txt.style.color=v.c;}
-    function updateUserUI(u){var n=u.displayName||u.email.split('@')[0]||'User';document.getElementById('userAvatar').textContent=n.charAt(0).toUpperCase();document.getElementById('userName').textContent=n;document.getElementById('udName').textContent=u.displayName||'-';document.getElementById('udEmail').textContent=u.email;}
+
+    /* Update User UI + Role Badge */
+    function updateUserUI(u){
+      var n=u.displayName||u.email.split('@')[0]||'User';
+      document.getElementById('userAvatar').textContent=n.charAt(0).toUpperCase();
+      document.getElementById('userName').textContent=n;
+      document.getElementById('udName').innerHTML = n + ' <span class="role-badge '+(isAdmin?'admin':'user')+'" id="udRole">'+(isAdmin?'ADMIN':'USER')+'</span>';
+      document.getElementById('udEmail').textContent=u.email;
+      /* Tampilkan/sembunyikan banner locked di tab riwayat */
+      document.getElementById('lockedBanner').style.display = isAdmin ? 'none' : 'flex';
+    }
     function toggleUserDD(){document.getElementById('userDropdown').classList.toggle('show');}
     function closeUserDD(){document.getElementById('userDropdown').classList.remove('show');}
     document.addEventListener('click',function(e){var m=document.getElementById('userMenu');if(m&&!m.contains(e.target))closeUserDD();});
 
-    /* ================================================================
-       MAIN TABS
-       ================================================================ */
-    function switchMainTab(tab, btn) {
-      currentMainTab = tab;
-      document.querySelectorAll('.main-tab').forEach(function(t) { t.classList.remove('active'); });
-      document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
-      btn.classList.add('active');
-      document.getElementById(tab === 'aktif' ? 'panelAktif' : 'panelRiwayat').classList.add('active');
-    }
+    /* MAIN TABS */
+    function switchMainTab(tab,btn){currentMainTab=tab;document.querySelectorAll('.main-tab').forEach(function(t){t.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');document.getElementById(tab==='aktif'?'panelAktif':'panelRiwayat').classList.add('active');}
 
     /* ================================================================
        AUTH STATE
        ================================================================ */
     auth.onAuthStateChanged(function(user){
       if(user){
+        /* CEK ROLE: apakah admin? */
+        isAdmin = (user.email === ADMIN_EMAIL);
+        
         document.getElementById('authScreen').classList.add('hidden');
         document.getElementById('appWrapper').classList.add('visible');
         updateUserUI(user);
         if(!window._appStarted){window._appStarted=true;setDefaultDate();startDataEngine();}
+        /* Jika role berubah saat sudah login (misal update email), re-render */
+        else { renderAll(); }
       }else{
         document.getElementById('authScreen').classList.remove('hidden');
         document.getElementById('appWrapper').classList.remove('visible');
@@ -459,15 +479,14 @@
     });
 
     /* ================================================================
-       DATA ENGINE — Cache-first + Realtime
+       DATA ENGINE
        ================================================================ */
     async function startDataEngine(){
       const cached=await loadFromCache();
       if(cached.length>0){
         cached.sort(function(a,b){const ta=a.createdAt?(a.createdAt.seconds||0):0,tb=b.createdAt?(b.createdAt.seconds||0):0;return ta-tb;});
         cached.forEach(function(o,i){o._rowIndex=i;});
-        allOrders=cached;isFirstLoad=false;
-        renderAll();updateSyncTime();
+        allOrders=cached;isFirstLoad=false;renderAll();updateSyncTime();
         document.getElementById('tableSkeleton').style.display='none';
         document.getElementById('dataTableEl').style.display='table';
       }
@@ -482,17 +501,11 @@
           for(let i=data.length-nc;i<data.length;i++)newRowIndices.add(data[i]._rowIndex);
           showToast(nc+' order baru!','info');
         }
-        isFirstLoad=false;
-        cacheToLocal(data);
-        renderAll();updateSyncTime();
+        isFirstLoad=false;cacheToLocal(data);renderAll();updateSyncTime();
         setTimeout(function(){newRowIndices.clear();},5000);
-      },function(er){
-        sd.classList.remove('syncing');
-        if(cached.length===0)showToast('Koneksi error: '+er.message,'error');
-      });
+      },function(er){sd.classList.remove('syncing');if(cached.length===0)showToast('Koneksi error: '+er.message,'error');});
     }
 
-    /* Render semua komponen sekaligus */
     function renderAll(){renderAktifTable();renderRiwayatTable();updateAllStats();}
 
     /* ================================================================
@@ -501,7 +514,6 @@
     function toggleTheme(){const h=document.documentElement,c=h.getAttribute('data-theme'),n=c==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('theme',n);}
     (function initTheme(){const s=localStorage.getItem('theme');if(s)document.documentElement.setAttribute('data-theme',s);else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:light)').matches)document.documentElement.setAttribute('data-theme','light');})();
     function getStatusClass(s){s=(s||'').toUpperCase();if(s==='PENDING')return'pending';if(s==='PROSES')return'proses';if(s==='READY')return'ready';if(s==='FINISH')return'finish';return'pending';}
-    function canDelete(s){return(s||'').toUpperCase()==='FINISH';}
     function escapeHtml(s){if(!s)return'';const d=document.createElement('div');d.textContent=String(s);return d.innerHTML;}
     function formatDateDisplay(d){if(!d)return'-';if(d.match(/^\d{4}-\d{2}-\d{2}$/)){const p=d.split('-');return p[2]+'/'+p[1]+'/'+p[0];}return d;}
     function debouncedSearch(){clearTimeout(searchDebounceTimer);searchDebounceTimer=setTimeout(renderAktifTable,150);}
@@ -544,7 +556,7 @@
           'NO. SERVICE CASE':d['NO. SERVICE CASE']||'','TYPE (IDNO)':d['TYPE (IDNO)'],
           'NO. SERIE':d['NO. SERIE']||'','NO GUDANG':d['NO GUDANG']||'',
           'NAMA PART':d['NAMA PART'],'QTY':d['QTY'],'PROD.':d['PROD.'],'LAYANAN':d['LAYANAN'],
-          'NAMA KONSUMEN':d['NAMA KONSUMEN'],'NO. HP':d['NO. HP'],'TGL Order':'',
+          'NAMA KONSUMEN':d['NAMA KONSUMEN'],'NO. HP':d['NO. HP'],'Tgl Order':'',
           'No. Order':orderNo,'Keterangan Pemenuhan':'',
           'createdAt':firebase.firestore.FieldValue.serverTimestamp(),
           'createdBy':user?user.email:'','createdByName':user?(user.displayName||user.email.split('@')[0]):''
@@ -553,7 +565,7 @@
     }
 
     /* ================================================================
-       RENDER TABLE AKTIF (bukan FINISH)
+       RENDER TABLE AKTIF
        ================================================================ */
     function renderAktifTable(){
       const tb=document.getElementById('tableBody'),es=document.getElementById('emptyState'),sk=document.getElementById('tableSkeleton'),te=document.getElementById('dataTableEl'),ft=document.getElementById('tableFooter');
@@ -564,15 +576,14 @@
       if(sk)sk.style.display='none';if(te)te.style.display='table';
       if(fd.length===0){tb.innerHTML='';es.style.display='block';ft.style.display='none';return;}
       es.style.display='none';ft.style.display='flex';
-      const totalAktif=getAktifOrders().length;
-      document.getElementById('rowCount').textContent=fd.length;document.getElementById('rowTotal').textContent=totalAktif;
+      document.getElementById('rowCount').textContent=fd.length;document.getElementById('rowTotal').textContent=getAktifOrders().length;
       let h='';for(let i=0;i<fd.length;i++){const o=fd[i],s=o['STATUS']||'PENDING',sc=getStatusClass(s),ri=o._rowIndex,isNew=newRowIndices.has(ri),to=o['TGL Order']||'',no=o['No. Order']||'',k=o['Keterangan Pemenuhan']||'',da='onclick="openEditModal(\''+o._docId+'\')"';
-      h+='<tr class="'+(isNew?'new-row':'')+'"><td>'+(i+1)+'</td><td><span class="status-badge '+sc+'"><span class="status-dot"></span>'+escapeHtml(s)+'</span></td><td class="name-cell">'+escapeHtml(o['TEKNISI']||'')+'</td><td>'+formatDateDisplay(o['TGL PENGAJUAN ORD']||'')+'</td><td>'+escapeHtml(o['NO. SERVICE CASE']||'')+'</td><td>'+escapeHtml(o['TYPE (IDNO)']||'')+'</td><td>'+escapeHtml(o['NO. SERIE']||'')+'</td><td>'+escapeHtml(o['NO GUDANG']||'')+'</td><td class="name-cell">'+escapeHtml(o['NAMA PART']||'')+'</td><td>'+escapeHtml(o['QTY']||'')+'</td><td>'+escapeHtml(o['PROD.']||'')+'</td><td>'+escapeHtml(o['LAYANAN']||'')+'</td><td class="name-cell">'+escapeHtml(o['NAMA KONSUMEN']||'')+'</td><td>'+escapeHtml(o['NO. HP']||'')+'</td><td class="editable-cell" '+da+'>'+formatDateDisplay(to)+'</td><td class="editable-cell" '+da+' style="color:var(--accent);font-weight:600;">'+escapeHtml(no||'-')+'</td><td class="editable-cell" '+da+'>'+escapeHtml(k||'-')+'</td><td><div class="action-btns"><button class="action-btn" '+da+'><i class="fas fa-pen"></i></button><button class="action-btn delete disabled-delete" onclick="showDeleteWarning()" title="Hanya FINISH bisa dihapus"><i class="fas fa-trash"></i></button></div></td></tr>';}
+      h+='<tr class="'+(isNew?'new-row':'')+'"><td>'+(i+1)+'</td><td><span class="status-badge '+sc+'"><span class="status-dot"></span>'+escapeHtml(s)+'</span></td><td class="name-cell">'+escapeHtml(o['TEKNISI']||'')+'</td><td>'+formatDateDisplay(o['TGL PENGAJUAN ORD']||'')+'</td><td>'+escapeHtml(o['NO. SERVICE CASE']||'')+'</td><td>'+escapeHtml(o['TYPE (IDNO)']||'')+'</td><td>'+escapeHtml(o['NO. SERIE']||'')+'</td><td>'+escapeHtml(o['NO GUDANG']||'')+'</td><td class="name-cell">'+escapeHtml(o['NAMA PART']||'')+'</td><td>'+escapeHtml(o['QTY']||'')+'</td><td>'+escapeHtml(o['PROD.']||'')+'</td><td>'+escapeHtml(o['LAYANAN']||'')+'</td><td class="name-cell">'+escapeHtml(o['NAMA KONSUMEN']||'')+'</td><td>'+escapeHtml(o['NO. HP']||'')+'</td><td class="editable-cell" '+da+'>'+formatDateDisplay(to)+'</td><td class="editable-cell" '+da+' style="color:var(--accent);font-weight:600;">'+escapeHtml(no||'-')+'</td><td class="editable-cell" '+da+'>'+escapeHtml(k||'-')+'</td><td><div class="action-btns"><button class="action-btn" '+da+'><i class="fas fa-pen"></i></button><button class="action-btn locked" title="Hanya FINISH bisa dihapus"><i class="fas fa-trash"></i></button></div></td></tr>';}
       tb.innerHTML=h;if(newRowIndices.size>0){setTimeout(function(){const nr=tb.querySelector('.new-row');if(nr)nr.scrollIntoView({behavior:'smooth',block:'center'});},300);}
     }
 
     /* ================================================================
-       RENDER TABLE RIWAYAT (hanya FINISH)
+       RENDER TABLE RIWAYAT — DENGAN CEK ROLE ADMIN
        ================================================================ */
     function renderRiwayatTable(){
       const tb=document.getElementById('riwayatBody'),es=document.getElementById('emptyRiwayat'),te=document.getElementById('riwayatTableEl'),ft=document.getElementById('riwayatFooter');
@@ -582,8 +593,24 @@
       if(fd.length===0){tb.innerHTML='';es.style.display='block';te.style.display='none';ft.style.display='none';return;}
       es.style.display='none';te.style.display='table';ft.style.display='flex';
       document.getElementById('riwayatCount').textContent=fd.length;
-      let h='';for(let i=0;i<fd.length;i++){const o=fd[i],to=o['TGL Order']||'',no=o['No. Order']||'',k=o['Keterangan Pemenuhan']||'',da='onclick="openEditModal(\''+o._docId+'\')"';
-      h+='<tr><td>'+(i+1)+'</td><td><span class="status-badge finish"><span class="status-dot"></span>FINISH</span></td><td class="name-cell">'+escapeHtml(o['TEKNISI']||'')+'</td><td>'+formatDateDisplay(o['TGL PENGAJUAN ORD']||'')+'</td><td>'+escapeHtml(o['NO. SERVICE CASE']||'')+'</td><td>'+escapeHtml(o['TYPE (IDNO)']||'')+'</td><td>'+escapeHtml(o['NO. SERIE']||'')+'</td><td>'+escapeHtml(o['NO GUDANG']||'')+'</td><td class="name-cell">'+escapeHtml(o['NAMA PART']||'')+'</td><td>'+escapeHtml(o['QTY']||'')+'</td><td>'+escapeHtml(o['PROD.']||'')+'</td><td>'+escapeHtml(o['LAYANAN']||'')+'</td><td class="name-cell">'+escapeHtml(o['NAMA KONSUMEN']||'')+'</td><td>'+escapeHtml(o['NO. HP']||'')+'</td><td class="editable-cell" '+da+'>'+formatDateDisplay(to)+'</td><td class="editable-cell" '+da+' style="color:var(--info);font-weight:600;">'+escapeHtml(no||'-')+'</td><td class="editable-cell" '+da+'>'+escapeHtml(k||'-')+'</td><td><div class="action-btns"><button class="action-btn" '+da+'><i class="fas fa-pen"></i></button><button class="action-btn delete" onclick="confirmDelete(\''+o._docId+'\')" title="Hapus"><i class="fas fa-trash"></i></button></div></td></tr>';}
+
+      /* Tentukan apakah user bisa edit/hapus di riwayat */
+      const canEdit = isAdmin;
+      const cellClass = canEdit ? 'editable-cell' : 'locked-cell';
+      const editAction = canEdit ? 'onclick="openEditModal(\'' : '';
+      const editActionClose = canEdit ? '\')"' : '';
+      const btnEditClass = canEdit ? '' : ' locked';
+      const btnEditTitle = canEdit ? '' : ' title="Hanya Admin yang bisa mengedit"';
+      const btnDelClass = canEdit ? '' : ' locked';
+      const btnDelTitle = canEdit ? '' : ' title="Hanya Admin yang bisa menghapus"';
+      const delAction = canEdit ? 'onclick="confirmDelete(\'' : '';
+      const delActionClose = canEdit ? '\')"' : '';
+
+      let h='';
+      for(let i=0;i<fd.length;i++){
+        const o=fd[i],to=o['TGL Order']||'',no=o['No. Order']||'',k=o['Keterangan Pemenuhan']||'';
+        h+='<tr><td>'+(i+1)+'</td><td><span class="status-badge finish"><span class="status-dot"></span>FINISH</span></td><td class="name-cell">'+escapeHtml(o['TEKNISI']||'')+'</td><td>'+formatDateDisplay(o['TGL PENGAJUAN ORD']||'')+'</td><td>'+escapeHtml(o['NO. SERVICE CASE']||'')+'</td><td>'+escapeHtml(o['TYPE (IDNO)']||'')+'</td><td>'+escapeHtml(o['NO. SERIE']||'')+'</td><td>'+escapeHtml(o['NO GUDANG']||'')+'</td><td class="name-cell">'+escapeHtml(o['NAMA PART']||'')+'</td><td>'+escapeHtml(o['QTY']||'')+'</td><td>'+escapeHtml(o['PROD.']||'')+'</td><td>'+escapeHtml(o['LAYANAN']||'')+'</td><td class="name-cell">'+escapeHtml(o['NAMA KONSUMEN']||'')+'</td><td>'+escapeHtml(o['NO. HP']||'')+'</td><td class="'+cellClass+'" '+editAction+o._docId+editActionClose+'>'+formatDateDisplay(to)+'</td><td class="'+cellClass+'" '+editAction+o._docId+editActionClose+' style="color:var(--info);font-weight:600;">'+escapeHtml(no||'-')+'</td><td class="'+cellClass+'" '+editAction+o._docId+editActionClose+'>'+escapeHtml(k||'-')+'</td><td><div class="action-btns"><button class="action-btn'+btnEditClass+'" '+editAction+o._docId+editActionClose+btnEditTitle+'><i class="fas fa-pen"></i></button><button class="action-btn delete'+btnDelClass+'" '+delAction+o._docId+delActionClose+btnDelTitle+'><i class="fas fa-trash"></i></button></div></td></tr>';
+      }
       tb.innerHTML=h;
     }
 
@@ -607,6 +634,13 @@
        ================================================================ */
     function openEditModal(docId){
       const o=allOrders.find(function(x){return x._docId===docId;});if(!o)return;
+      
+      /* CEK ADMIN JIKA EDIT DATA FINISH (DI RIWAYAT) */
+      if((o['STATUS']||'').toUpperCase() === 'FINISH' && !isAdmin){
+        showToast('Hanya Admin yang bisa mengubah data riwayat.','warning');
+        return;
+      }
+
       document.getElementById('modalRowIndex').value=docId;
       document.getElementById('modalStatus').value=(o['STATUS']||'PENDING').toUpperCase();
       document.getElementById('modalTglOrder').value=o['TGL Order']||'';
@@ -630,12 +664,13 @@
     }
 
     /* ================================================================
-       DELETE (hanya dari Riwayat/FINISH)
+       DELETE
        ================================================================ */
-    function showDeleteWarning(){showToast('Hapus hanya untuk status FINISH di tab Riwayat.','warning');}
     function confirmDelete(docId){
+      /* CEK ADMIN */
+      if(!isAdmin){showToast('Hanya Admin yang bisa menghapus data riwayat.','warning');return;}
+      
       const o=allOrders.find(function(x){return x._docId===docId;});if(!o)return;
-      if(!canDelete(o['STATUS'])){showToast('Hapus hanya untuk FINISH!','warning');return;}
       const em=document.getElementById('deleteConfirmModal');if(em)em.remove();
       const ov=document.createElement('div');ov.className='modal-overlay active';ov.id='deleteConfirmModal';
       ov.innerHTML='<div class="modal" style="max-width:380px;"><div class="modal-header"><h3 style="color:var(--danger);"><i class="fas fa-exclamation-triangle" style="margin-right:8px;"></i>Hapus Order</h3><button class="modal-close" onclick="closeDeleteModal()"><i class="fas fa-times"></i></button></div><div class="modal-body"><p style="color:var(--text-secondary);">Yakin hapus order <strong style="color:var(--accent);">#'+escapeHtml(o['No. Order']||'-')+'</strong> dari riwayat?</p></div><div class="modal-footer"><button class="btn btn-secondary btn-sm" onclick="closeDeleteModal()">Batal</button><button class="btn btn-danger btn-sm" id="confirmDeleteBtn"><i class="fas fa-trash"></i> Hapus</button></div></div>';
