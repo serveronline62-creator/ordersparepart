@@ -22,7 +22,7 @@
     const db = firebase.firestore();
   </script>
   <style>
-    /* === GAYA CSS (sama seperti sebelumnya) === */
+    /* ===== GAYA CSS (sama seperti sebelumnya) ===== */
     :root, [data-theme="dark"] {
       --bg-primary: #0b1120; --bg-secondary: #111827; --bg-card: #1a2332;
       --bg-card-hover: #1e293b; --bg-input: #0f172a; --border: #1e3a5f;
@@ -468,10 +468,10 @@
           <td class="name-cell">${escapeHtml(o['NAMA KONSUMEN']||'')}</td>
           <td>${escapeHtml(o['NO. HP']||'')}</td>
           <td>${formatDateDisplay(o['TGL Order']||'')}</td>
-          <td class="editable-inline" data-docid="${di}" data-field="No. Order" data-value="${escapeHtml(no)}"><span>${escapeHtml(no||'-')}</span><span class="edit-hint"><i class="fas fa-pen"></i></span></td>
-          <td class="editable-inline" data-docid="${di}" data-field="TANGGAL SELESAI" data-value="${escapeHtml(tglSelesai)}"><span>${formatDateDisplay(tglSelesai)}</span><span class="edit-hint"><i class="fas fa-pen"></i></span></td>
+          <td class="editable-inline" data-docid="${di}" data-field="No. Order"><span>${escapeHtml(no||'-')}</span><span class="edit-hint"><i class="fas fa-pen"></i></span></td>
+          <td class="editable-inline" data-docid="${di}" data-field="TANGGAL SELESAI"><span>${formatDateDisplay(tglSelesai)}</span><span class="edit-hint"><i class="fas fa-pen"></i></span></td>
           <td style="font-weight:600;color:var(--accent);" data-lama="${lama}">${lama}</td>
-          <td class="editable-inline" data-docid="${di}" data-field="Keterangan Pemenuhan" data-value="${escapeHtml(ket)}"><span>${escapeHtml(ket||'-')}</span><span class="edit-hint"><i class="fas fa-pen"></i></span></td>
+          <td class="editable-inline" data-docid="${di}" data-field="Keterangan Pemenuhan"><span>${escapeHtml(ket||'-')}</span><span class="edit-hint"><i class="fas fa-pen"></i></span></td>
           <td><div class="action-btns"><button class="action-btn" onclick="openEditModal('${di}')"><i class="fas fa-pen"></i></button><button class="action-btn ${dc}" ${da} title="${dt}"><i class="fas fa-trash"></i></button></div></td>
         </tr>`;
       }
@@ -487,7 +487,7 @@
     }
 
     // ============================================================
-    // PERBAIKAN PRESISI: INLINE EDIT DENGAN TAMPILAN LANGSUNG
+    // PERBAIKAN PRESISI: INLINE EDIT DENGAN TAMPILAN LANGSUNG & PERMANEN
     // ============================================================
     function startInlineEdit(td){
       const span = td.querySelector('span:first-child');
@@ -496,8 +496,6 @@
       const currentText = span.textContent.trim();
       const docId = td.dataset.docid;
       const field = td.dataset.field;
-      
-      // Simpan nilai lama untuk rollback jika gagal
       const oldValue = (currentText === '-') ? '' : currentText;
       
       // Buat input
@@ -519,21 +517,22 @@
         newSpan.textContent = val || '-';
         input.replaceWith(newSpan);
         
-        // Update data lokal agar konsisten
-        const order = allOrders.find(o => o._docId === docId);
-        if (order) {
-          order[field] = val;
+        // Update data lokal allOrders
+        const orderIndex = allOrders.findIndex(o => o._docId === docId);
+        if (orderIndex !== -1) {
+          allOrders[orderIndex][field] = val;
         }
         
         // Jika field adalah TANGGAL SELESAI, perbarui kolom Lama Pengiriman di baris terkait
         if (field === 'TANGGAL SELESAI') {
           const tr = td.closest('tr');
-          const tglOrderCell = tr.querySelector('td:nth-child(15)'); // indeks Tgl Order (15)
+          // Cari kolom Tgl Order (indeks 15, karena 0-based)
+          const tglOrderCell = tr.querySelector('td:nth-child(15)');
           const tglOrderText = tglOrderCell ? tglOrderCell.textContent.trim() : '';
-          const tglOrder = tglOrderText !== '-' ? tglOrderText : '';
+          const tglOrder = (tglOrderText !== '-') ? tglOrderText : '';
           const tglSelesai = val;
           const lama = hitungLamaPengiriman(tglOrder, tglSelesai);
-          const lamaCell = tr.querySelector('td:nth-child(18)'); // indeks Lama Pengiriman (18)
+          const lamaCell = tr.querySelector('td:nth-child(18)'); // indeks Lama Pengiriman
           if (lamaCell) {
             lamaCell.textContent = lama;
             lamaCell.style.color = 'var(--accent)';
@@ -541,41 +540,36 @@
           }
         }
         
-        // Kirim update ke Firebase
+        // Kirim update ke Firebase di background
         if (docId && field) {
           const updateObj = {};
           updateObj[field] = val;
           db.collection('orders').doc(docId).update(updateObj)
             .then(() => {
               showToast(`${field} berhasil diupdate!`, 'success');
-              // Refresh data dari Firebase untuk menjaga konsistensi (tapi tanpa reload penuh yang mengganggu)
-              // Kita bisa load ulang di background, atau update allOrders secara lokal
-              // Untuk amannya, kita load ulang tapi tidak mengganggu tampilan (tanpa render ulang langsung)
-              loadOrders();
+              // Tidak perlu reload tabel, karena DOM sudah diperbarui.
             })
             .catch(er => {
               showToast('Error: ' + er.message, 'error');
               // Rollback ke nilai lama
               const rollbackSpan = document.createElement('span');
               rollbackSpan.textContent = oldValue || '-';
-              // Cari span yang baru dibuat (newSpan) dan ganti dengan rollback
               const currentSpan = td.querySelector('span:first-child');
               if (currentSpan) {
                 currentSpan.replaceWith(rollbackSpan);
               } else {
-                // jika tidak ada, append
                 td.appendChild(rollbackSpan);
               }
               // Kembalikan data lokal
-              if (order) {
-                order[field] = oldValue;
+              if (orderIndex !== -1) {
+                allOrders[orderIndex][field] = oldValue;
               }
               // Kembalikan Lama Pengiriman jika perlu
               if (field === 'TANGGAL SELESAI') {
                 const tr = td.closest('tr');
                 const tglOrderCell = tr.querySelector('td:nth-child(15)');
                 const tglOrderText = tglOrderCell ? tglOrderCell.textContent.trim() : '';
-                const tglOrder = tglOrderText !== '-' ? tglOrderText : '';
+                const tglOrder = (tglOrderText !== '-') ? tglOrderText : '';
                 const lama = hitungLamaPengiriman(tglOrder, oldValue);
                 const lamaCell = tr.querySelector('td:nth-child(18)');
                 if (lamaCell) {
@@ -593,13 +587,13 @@
         input.replaceWith(newSpan);
       };
 
-      // Event: blur (klik di luar) -> simpan
+      // Event: blur -> simpan
       input.addEventListener('blur', save);
       // Event: keydown (Enter -> simpan, Escape -> batal)
       input.addEventListener('keydown', function(e){
         if (e.key === 'Enter') {
           e.preventDefault();
-          this.blur(); // memicu blur yang akan memanggil save
+          this.blur();
         } else if (e.key === 'Escape') {
           e.preventDefault();
           cancel();
