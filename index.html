@@ -329,7 +329,7 @@
     </div>
   </div>
 
-  <!-- MODAL EDIT (untuk field lain yang tidak inline) -->
+  <!-- MODAL EDIT -->
   <div class="modal-overlay" id="editModal">
     <div class="modal">
       <div class="modal-header"><h3><i class="fas fa-edit"></i> Edit Order (Lengkap)</h3><button class="modal-close" onclick="closeEditModal()"><i class="fas fa-times"></i></button></div>
@@ -478,7 +478,7 @@
         </tr>`;
       }
       tb.innerHTML=html;
-      // Pasang event double-click untuk inline editing
+      // Pasang double-click untuk inline edit
       document.querySelectorAll('.editable-inline').forEach(td=>{
         td.addEventListener('dblclick', function(e){
           e.stopPropagation();
@@ -488,39 +488,46 @@
       if(newRowIndices.size>0){ setTimeout(()=>{ const nr=tb.querySelector('.new-row'); if(nr) nr.scrollIntoView({behavior:'smooth',block:'center'}); },300); }
     }
 
-    // --- INLINE EDITING (diperbaiki agar nilai tetap tampil) ---
+    // ============================================================
+    // PERBAIKAN UTAMA: INLINE EDIT DENGAN TAMPILAN LANGSUNG
+    // ============================================================
     function startInlineEdit(td){
+      // Ambil elemen span pertama di dalam td (yang berisi nilai)
       const span = td.querySelector('span:first-child');
       if (!span) return;
+      
       const currentText = span.textContent.trim();
       const docId = td.dataset.docid;
       const field = td.dataset.field;
+      
       // Buat input
       const input = document.createElement('input');
       input.type = 'text';
       input.className = 'inline-input';
-      // Isi dengan nilai yang ada (jika '-' maka kosongkan)
       input.value = (currentText === '-') ? '' : currentText;
+      
+      // Ganti span dengan input
       span.replaceWith(input);
       input.focus();
       input.select();
 
+      // Fungsi untuk menyimpan
       const save = () => {
         const val = input.value.trim();
-        // Buat span baru dengan nilai yang diinput (atau '-' jika kosong)
+        // Buat span baru dengan nilai (jika kosong, tampilkan '-')
         const newSpan = document.createElement('span');
         newSpan.textContent = val || '-';
-        // Ganti input dengan span baru
+        // Ganti input dengan span baru (langsung tampil)
         input.replaceWith(newSpan);
-        // Simpan ke Firebase jika ada perubahan
+        
+        // Jika ada perubahan, update ke Firebase
         if (docId && field) {
-          // Jika nilai berubah dari sebelumnya, update
           const updateObj = {};
           updateObj[field] = val;
           db.collection('orders').doc(docId).update(updateObj)
             .then(() => {
               showToast(`${field} berhasil diupdate!`, 'success');
-              // Refresh data dari Firebase agar semua kolom sinkron
+              // Refresh data dari Firebase agar semua kolom sinkron (termasuk lama pengiriman)
               loadOrders();
             })
             .catch(er => {
@@ -531,18 +538,20 @@
         }
       };
 
+      // Fungsi untuk batal
       const cancel = () => {
         const newSpan = document.createElement('span');
         newSpan.textContent = currentText || '-';
         input.replaceWith(newSpan);
       };
 
-      // Simpan saat blur atau tekan Enter
+      // Event: blur (klik di luar) -> simpan
       input.addEventListener('blur', save);
+      // Event: keydown (Enter -> simpan, Escape -> batal)
       input.addEventListener('keydown', function(e){
         if (e.key === 'Enter') {
           e.preventDefault();
-          this.blur();
+          this.blur(); // memicu blur yang akan memanggil save
         } else if (e.key === 'Escape') {
           e.preventDefault();
           cancel();
