@@ -24,7 +24,7 @@
   </script>
 
   <style>
-    /* === SAMA SEPERTI SEBELUMNYA (dipertahankan) === */
+    /* === GAYA CSS (sama seperti sebelumnya, dengan penyesuaian minimal) === */
     :root, [data-theme="dark"] {
       --bg-primary: #0b1120; --bg-secondary: #111827; --bg-card: #1a2332;
       --bg-card-hover: #1e293b; --bg-input: #0f172a; --border: #1e3a5f;
@@ -281,6 +281,7 @@
                 <th>Tgl Order</th>
                 <th>No. Order <span style="font-weight:400;font-size:0.6rem;color:var(--accent);">(klik 2x)</span></th>
                 <th>Tanggal Selesai <span style="font-weight:400;font-size:0.6rem;color:var(--accent);">(klik 2x)</span></th>
+                <th>Lama Pengiriman</th>
                 <th>Keterangan</th>
                 <th>Aksi</th>
               </tr>
@@ -375,6 +376,21 @@
     function canDelete(s){return(s||'').toUpperCase()==='FINISH';}
     function escapeHtml(s){if(!s)return'';const d=document.createElement('div');d.textContent=String(s);return d.innerHTML;}
     function formatDateDisplay(d){if(!d)return'-';if(d.match(/^\d{4}-\d{2}-\d{2}$/)){const p=d.split('-');return p[2]+'/'+p[1]+'/'+p[0];}return d;}
+
+    // --- FUNGSI HITUNG LAMA PENGIRIMAN ---
+    function hitungLamaPengiriman(tglOrder, tglSelesai) {
+      // Gunakan Tgl Order jika ada, fallback ke Tgl Pengajuan (dari data lain) tetapi kita tidak punya di sini,
+      // jadi kita akan terima parameter tglOrder yang sudah berupa string YYYY-MM-DD.
+      if (!tglOrder || !tglSelesai) return '-';
+      const d1 = new Date(tglOrder);
+      const d2 = new Date(tglSelesai);
+      if (isNaN(d1.getTime()) || isNaN(d2.getTime())) return '-';
+      const diffTime = d2.getTime() - d1.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays < 0) return '0 hari'; // jika selesai lebih awal dari order (tidak mungkin)
+      return diffDays + ' hari';
+    }
+
     function debouncedSearch(){clearTimeout(searchDebounceTimer);searchDebounceTimer=setTimeout(renderTable,250);}
     function openInputModal(){resetForm();document.getElementById('inputModal').classList.add('active');}
     function closeInputModal(){document.getElementById('inputModal').classList.remove('active');}
@@ -437,6 +453,9 @@
       for(let i=0;i<fd.length;i++){
         const o=fd[i], s=o['STATUS']||'PENDING', sc=getStatusClass(s), ri=o._rowIndex, di=o._docId, isNew=newRowIndices.has(ri);
         const no=o['No. Order']||'', tglSelesai=o['TANGGAL SELESAI']||'', ket=o['Keterangan Pemenuhan']||'', dl=canDelete(s);
+        // Hitung lama pengiriman
+        const tglOrder = o['TGL Order'] || ''; // bisa kosong
+        const lama = hitungLamaPengiriman(tglOrder, tglSelesai);
         const dc=dl?'delete':'delete disabled-delete', dt=dl?'Hapus':'Hanya FINISH bisa dihapus', da=dl?`onclick="confirmDelete('${di}')"`:'onclick="showDeleteWarning()"';
         html+=`<tr class="${isNew?'new-row':''}">
           <td>${i+1}</td>
@@ -456,6 +475,7 @@
           <td>${formatDateDisplay(o['TGL Order']||'')}</td>
           <td class="editable-inline" data-docid="${di}" data-field="No. Order" data-value="${escapeHtml(no)}"><span>${escapeHtml(no||'-')}</span><span class="edit-hint"><i class="fas fa-pen"></i></span></td>
           <td class="editable-inline" data-docid="${di}" data-field="TANGGAL SELESAI" data-value="${escapeHtml(tglSelesai)}"><span>${formatDateDisplay(tglSelesai)}</span><span class="edit-hint"><i class="fas fa-pen"></i></span></td>
+          <td style="font-weight:600;color:var(--accent);">${lama}</td>
           <td class="editable-inline" data-docid="${di}" data-field="Keterangan Pemenuhan" data-value="${escapeHtml(ket)}"><span>${escapeHtml(ket||'-')}</span><span class="edit-hint"><i class="fas fa-pen"></i></span></td>
           <td><div class="action-btns"><button class="action-btn" onclick="openEditModal('${di}')"><i class="fas fa-pen"></i></button><button class="action-btn ${dc}" ${da} title="${dt}"><i class="fas fa-trash"></i></button></div></td>
         </tr>`;
@@ -569,8 +589,33 @@
     function updateSyncTime(){ const n=new Date(); document.getElementById('lastSync').textContent=n.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
     function downloadExcel(){
       if(allOrders.length===0){ showToast('Tidak ada data.','warning'); return; }
-      const rows=[['#','STATUS','TEKNISI','TGL PENGAJUAN ORD','NO. SERVICE CASE','TYPE (IDNO)','NO. SERIE','NO GUDANG','NAMA PART','QTY','PROD.','LAYANAN','NAMA KONSUMEN','NO. HP','TGL Order','No. Order','Tanggal Selesai','Keterangan Pemenuhan']];
-      allOrders.forEach((o,i)=>{ rows.push([i+1,o['STATUS']||'PENDING',o['TEKNISI']||'',o['TGL PENGAJUAN ORD']||'',o['NO. SERVICE CASE']||'',o['TYPE (IDNO)']||'',o['NO. SERIE']||'',o['NO GUDANG']||'',o['NAMA PART']||'',o['QTY']||'',o['PROD.']||'',o['LAYANAN']||'',o['NAMA KONSUMEN']||'',o['NO. HP']||'',o['TGL Order']||'',o['No. Order']||'',o['TANGGAL SELESAI']||'',o['Keterangan Pemenuhan']||'']); });
+      const rows=[['#','STATUS','TEKNISI','TGL PENGAJUAN ORD','NO. SERVICE CASE','TYPE (IDNO)','NO. SERIE','NO GUDANG','NAMA PART','QTY','PROD.','LAYANAN','NAMA KONSUMEN','NO. HP','TGL Order','No. Order','Tanggal Selesai','Lama Pengiriman','Keterangan Pemenuhan']];
+      allOrders.forEach((o,i)=>{
+        const tglOrder = o['TGL Order'] || '';
+        const tglSelesai = o['TANGGAL SELESAI'] || '';
+        const lama = hitungLamaPengiriman(tglOrder, tglSelesai);
+        rows.push([
+          i+1,
+          o['STATUS']||'PENDING',
+          o['TEKNISI']||'',
+          o['TGL PENGAJUAN ORD']||'',
+          o['NO. SERVICE CASE']||'',
+          o['TYPE (IDNO)']||'',
+          o['NO. SERIE']||'',
+          o['NO GUDANG']||'',
+          o['NAMA PART']||'',
+          o['QTY']||'',
+          o['PROD.']||'',
+          o['LAYANAN']||'',
+          o['NAMA KONSUMEN']||'',
+          o['NO. HP']||'',
+          tglOrder,
+          o['No. Order']||'',
+          tglSelesai,
+          lama,
+          o['Keterangan Pemenuhan']||''
+        ]);
+      });
       const ws=XLSX.utils.aoa_to_sheet(rows); const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Orders');
       XLSX.writeFile(wb,'Order_Komponen_'+new Date().toISOString().split('T')[0]+'.xlsx');
       showToast('File Excel berhasil diunduh!','success');
