@@ -11,7 +11,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <style>
-    /* --- CSS SAMA SEPERTI SEBELUMNYA, TIDAK SAYA TULIS ULANG AGAR TIDAK TERLALU PANJANG --- */
+    /* --- SEMUA CSS SAMA SEPERTI SEBELUMNYA, TIDAK DIUBAH --- */
     :root, [data-theme="dark"] { --bg-primary: #0b1120; --bg-secondary: #111827; --bg-card: #1a2332; --bg-card-hover: #1e293b; --bg-input: #0f172a; --border: #1e3a5f; --border-focus: #00d4aa; --accent: #00d4aa; --accent-dim: rgba(0,212,170,0.15); --accent-glow: rgba(0,212,170,0.3); --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6; --success: #10b981; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --text-muted: #64748b; --shadow: 0 4px 24px rgba(0,0,0,0.3); --shadow-glow: 0 0 30px rgba(0,212,170,0.08); --navbar-bg: rgba(11,17,32,0.85); --table-head-bg: rgba(0,0,0,0.25); --row-hover: rgba(0,212,170,0.03); --new-row-bg: rgba(0,212,170,0.06); --overlay-bg: rgba(0,0,0,0.6); --info-box-bg: rgba(0,212,170,0.06); --info-box-border: rgba(0,212,170,0.15); --chip-bg: transparent; --toast-bg: #1a2332; --modal-bg: #1a2332; --spinner-track: rgba(11,17,32,0.2); --spinner-top: #0b1120; --spinner-accent-track: rgba(0,212,170,0.2); --radius: 8px; --radius-lg: 14px; }
     [data-theme="light"] { --bg-primary: #f0f4f8; --bg-secondary: #e2e8f0; --bg-card: #ffffff; --bg-card-hover: #f8fafc; --bg-input: #f1f5f9; --border: #cbd5e1; --border-focus: #0d9488; --accent: #0d9488; --accent-dim: rgba(13,148,136,0.12); --accent-glow: rgba(13,148,136,0.15); --warning: #d97706; --danger: #dc2626; --info: #2563eb; --success: #059669; --text-primary: #0f172a; --text-secondary: #475569; --text-muted: #94a3b8; --shadow: 0 4px 24px rgba(0,0,0,0.08); --shadow-glow: 0 0 20px rgba(13,148,136,0.06); --navbar-bg: rgba(240,244,248,0.9); --table-head-bg: #f1f5f9; --row-hover: rgba(13,148,136,0.04); --new-row-bg: rgba(13,148,136,0.06); --overlay-bg: rgba(0,0,0,0.3); --info-box-bg: rgba(13,148,136,0.05); --info-box-border: rgba(13,148,136,0.15); --chip-bg: #ffffff; --toast-bg: #ffffff; --modal-bg: #ffffff; --spinner-track: rgba(255,255,255,0.4); --spinner-top: #ffffff; --spinner-accent-track: rgba(13,148,136,0.2); --radius: 8px; --radius-lg: 14px; }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -157,22 +157,6 @@
     .data-table tbody td.editable-cell:hover::after { opacity: 0.7; } .data-table tbody td.editable-cell:hover { color: var(--accent); }
     .data-table tbody td.locked-cell { cursor: default !important; color: var(--text-muted) !important; opacity: 0.7; }
     .data-table tbody td.locked-cell::after { display: none; }
-    /* Tambahan untuk inline editing */
-    .data-table tbody td.editable-no-order { cursor: text; position: relative; transition: background 0.2s; }
-    .data-table tbody td.editable-no-order:hover { background: var(--accent-dim); }
-    .data-table tbody td.editable-no-order input { 
-      background: var(--bg-input); 
-      border: 1px solid var(--border-focus); 
-      border-radius: 4px; 
-      padding: 2px 6px; 
-      font-family: inherit; 
-      font-size: inherit; 
-      color: var(--text-primary); 
-      width: 100%; 
-      box-sizing: border-box; 
-      outline: none; 
-      box-shadow: 0 0 0 2px var(--accent-dim);
-    }
     .data-table tbody tr.new-row { background: var(--new-row-bg) !important; animation: rowHL 4s ease-out forwards; }
     @keyframes rowHL { 0% { background: var(--accent-dim) !important; box-shadow: inset 3px 0 0 var(--accent); } 100% { background: transparent !important; box-shadow: none; } }
     .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: 0.3px; }
@@ -303,7 +287,7 @@
     </main>
   </div>
 
-  <!-- MODAL INPUT -->
+  <!-- MODAL INPUT (tambahan field No. Order) -->
   <div class="modal-overlay" id="inputModal"><div class="modal modal-lg" style="position:relative;">
     <div class="loading-overlay" id="formLoading"><div class="spinner"></div></div>
     <div class="modal-header"><h3><i class="fas fa-file-invoice"></i> Input Order Komponen</h3><button class="modal-close" onclick="closeInputModal()"><i class="fas fa-times"></i></button></div>
@@ -329,11 +313,16 @@
         <div class="form-group"><label class="form-label">Nama Konsumen <span class="required">*</span></label><input class="form-input" type="text" name="NAMA KONSUMEN" required></div>
         <div class="form-group"><label class="form-label">No. HP <span class="required">*</span></label><input class="form-input" type="tel" name="NO. HP" required></div>
       </div>
+      <!-- TAMBAHAN: Field No. Order manual -->
+      <div class="form-section-title">Informasi Order</div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">No. Order <span class="required">*</span></label><input class="form-input" type="text" name="No. Order" id="inpNoOrder" placeholder="Contoh: ORD-20250101-0001" required></div>
+      </div>
     </form></div>
     <div class="modal-footer"><button class="btn btn-secondary btn-sm" onclick="resetForm()"><i class="fas fa-eraser"></i> Reset</button><button type="submit" form="orderForm" class="btn btn-primary btn-sm" id="submitBtn"><i class="fas fa-paper-plane"></i> Simpan</button></div>
   </div></div>
 
-  <!-- MODAL EDIT -->
+  <!-- MODAL EDIT (sudah ada field No. Order) -->
   <div class="modal-overlay" id="editModal"><div class="modal">
     <div class="modal-header"><h3><i class="fas fa-edit"></i> Edit Order</h3><button class="modal-close" onclick="closeEditModal()"><i class="fas fa-times"></i></button></div>
     <div class="modal-body">
@@ -423,12 +412,67 @@
     function resetForm(){document.getElementById('orderForm').reset();setDefaultDate();}
     function setDefaultDate(){const t=new Date().toISOString().split('T')[0],d=document.getElementById('inpTglPengajuan');if(d)d.value=t;}
 
-    function generateOrderNo(){const now=new Date(),y=now.getFullYear(),m=String(now.getMonth()+1).padStart(2,'0'),dd=String(now.getDate()).padStart(2,'0'),prefix='ORD-'+y+m+dd+'-';return db.collection(ORDERS_COL).where('No. Order','>=',prefix).where('No. Order','<',prefix+'ZZZZ').get().then(function(snap){let maxNum=0;snap.forEach(function(doc){const no=doc.data()['No. Order']||'',parts=no.split('-');if(parts.length===3){const n=parseInt(parts[2],10);if(!isNaN(n)&&n>maxNum)maxNum=n;}});return prefix+String(maxNum+1).padStart(4,'0');});}
+    // FUNGSI GENERATE No. Order TIDAK DIGUNAKAN LAGI
+    // Kita akan mengambil dari input manual
 
-    function handleSubmit(e){e.preventDefault();const f=document.getElementById('orderForm'),fd=new FormData(f),d={};for(let p of fd.entries())d[p[0]]=p[1].trim();const rf=['TEKNISI','TGL PENGAJUAN ORD','TYPE (IDNO)','NAMA PART','QTY','PROD.','LAYANAN','NAMA KONSUMEN','NO. HP'],fl={'TEKNISI':'Teknisi','TGL PENGAJUAN ORD':'Tgl Pengajuan','TYPE (IDNO)':'Type (IDNO)','NAMA PART':'Nama Part','QTY':'QTY','PROD.':'Prod.','LAYANAN':'Layanan','NAMA KONSUMEN':'Nama Konsumen','NO. HP':'No. HP'};for(let i=0;i<rf.length;i++){if(!d[rf[i]]){showToast('"'+(fl[rf[i]]||rf[i])+'" wajib diisi!','error');return;}}if(parseInt(d['QTY'])<1){showToast('QTY harus minimal 1!','error');return;}const sb=document.getElementById('submitBtn'),fl2=document.getElementById('formLoading');sb.disabled=true;sb.innerHTML='<div class="spinner"></div> Menyimpan...';fl2.classList.add('active');generateOrderNo().then(function(orderNo){const user=auth.currentUser;return db.collection(ORDERS_COL).add({'STATUS':'PENDING','TEKNISI':d['TEKNISI'],'TGL PENGAJUAN ORD':d['TGL PENGAJUAN ORD'],'NO. SERVICE CASE':d['NO. SERVICE CASE']||'','TYPE (IDNO)':d['TYPE (IDNO)'],'NO. SERIE':d['NO. SERIE']||'','NO GUDANG':d['NO GUDANG']||'','NAMA PART':d['NAMA PART'],'QTY':d['QTY'],'PROD.':d['PROD.'],'LAYANAN':d['LAYANAN'],'NAMA KONSUMEN':d['NAMA KONSUMEN'],'NO. HP':d['NO. HP'],'Tgl Order':'','No. Order':orderNo,'Keterangan Pemenuhan':'','createdAt':firebase.firestore.FieldValue.serverTimestamp(),'createdBy':user?user.email:'','createdByName':user?(user.displayName||user.email.split('@')[0]):''});}).then(function(){sb.disabled=false;sb.innerHTML='<i class="fas fa-paper-plane"></i> Simpan';fl2.classList.remove('active');closeInputModal();document.getElementById('successOverlay').classList.add('active');}).catch(function(er){sb.disabled=false;sb.innerHTML='<i class="fas fa-paper-plane"></i> Simpan';fl2.classList.remove('active');showToast('Error: '+er.message,'error');});}
+    function handleSubmit(e){
+      e.preventDefault();
+      const f=document.getElementById('orderForm'), fd=new FormData(f), d={};
+      for(let p of fd.entries()) d[p[0]]=p[1].trim();
+
+      const rf=['TEKNISI','TGL PENGAJUAN ORD','TYPE (IDNO)','NAMA PART','QTY','PROD.','LAYANAN','NAMA KONSUMEN','NO. HP','No. Order'];
+      const fl={'TEKNISI':'Teknisi','TGL PENGAJUAN ORD':'Tgl Pengajuan','TYPE (IDNO)':'Type (IDNO)','NAMA PART':'Nama Part','QTY':'QTY','PROD.':'Prod.','LAYANAN':'Layanan','NAMA KONSUMEN':'Nama Konsumen','NO. HP':'No. HP','No. Order':'No. Order'};
+      for(let i=0;i<rf.length;i++){
+        if(!d[rf[i]]){
+          showToast('"'+(fl[rf[i]]||rf[i])+'" wajib diisi!','error');
+          return;
+        }
+      }
+      if(parseInt(d['QTY'])<1){
+        showToast('QTY harus minimal 1!','error');
+        return;
+      }
+
+      const sb=document.getElementById('submitBtn'), fl2=document.getElementById('formLoading');
+      sb.disabled=true; sb.innerHTML='<div class="spinner"></div> Menyimpan...'; fl2.classList.add('active');
+
+      const user=auth.currentUser;
+      db.collection(ORDERS_COL).add({
+        'STATUS':'PENDING',
+        'TEKNISI':d['TEKNISI'],
+        'TGL PENGAJUAN ORD':d['TGL PENGAJUAN ORD'],
+        'NO. SERVICE CASE':d['NO. SERVICE CASE']||'',
+        'TYPE (IDNO)':d['TYPE (IDNO)'],
+        'NO. SERIE':d['NO. SERIE']||'',
+        'NO GUDANG':d['NO GUDANG']||'',
+        'NAMA PART':d['NAMA PART'],
+        'QTY':d['QTY'],
+        'PROD.':d['PROD.'],
+        'LAYANAN':d['LAYANAN'],
+        'NAMA KONSUMEN':d['NAMA KONSUMEN'],
+        'NO. HP':d['NO. HP'],
+        'Tgl Order':'',
+        'No. Order':d['No. Order'], // DIAMBIL DARI INPUT MANUAL
+        'Keterangan Pemenuhan':'',
+        'createdAt':firebase.firestore.FieldValue.serverTimestamp(),
+        'createdBy':user?user.email:'',
+        'createdByName':user?(user.displayName||user.email.split('@')[0]):''
+      })
+      .then(function(){
+        sb.disabled=false; sb.innerHTML='<i class="fas fa-paper-plane"></i> Simpan';
+        fl2.classList.remove('active');
+        closeInputModal();
+        document.getElementById('successOverlay').classList.add('active');
+      })
+      .catch(function(er){
+        sb.disabled=false; sb.innerHTML='<i class="fas fa-paper-plane"></i> Simpan';
+        fl2.classList.remove('active');
+        showToast('Error: '+er.message,'error');
+      });
+    }
 
     // ===================================================
-    // MODIFIKASI RENDER AKTIF TABLE DENGAN INLINE EDITING
+    // RENDER AKTIF TABLE – No. Order sekarang editable via modal (sama seperti Keterangan)
     // ===================================================
     function renderAktifTable() {
       const tb = document.getElementById('tableBody');
@@ -481,7 +525,7 @@
         const k = o['Keterangan Pemenuhan'] || '';
         const docId = o._docId;
 
-        // Kolom No. Order: tanpa onclick, pakai class 'editable-no-order'
+        // Kolom No. Order sekarang menggunakan class 'editable-cell' dan onclick membuka modal edit (sama seperti keterangan)
         h += '<tr class="' + (isNew ? 'new-row' : '') + '" data-docid="' + docId + '">' +
           '<td>' + (i + 1) + '</td>' +
           '<td><span class="status-badge ' + sc + '"><span class="status-dot"></span>' + escapeHtml(s) + '</span></td>' +
@@ -498,7 +542,7 @@
           '<td class="name-cell">' + escapeHtml(o['NAMA KONSUMEN'] || '') + '</td>' +
           '<td>' + escapeHtml(o['NO. HP'] || '') + '</td>' +
           '<td class="editable-cell" onclick="openEditModal(\'' + docId + '\')">' + formatDateDisplay(to) + '</td>' +
-          '<td class="editable-no-order" style="color:var(--accent);font-weight:600;cursor:text;" data-old-value="' + escapeHtml(no || '-') + '">' + escapeHtml(no || '-') + '</td>' +
+          '<td class="editable-cell" onclick="openEditModal(\'' + docId + '\')" style="color:var(--accent);font-weight:600;">' + escapeHtml(no || '-') + '</td>' +
           '<td class="editable-cell" onclick="openEditModal(\'' + docId + '\')">' + escapeHtml(k || '-') + '</td>' +
           '<td><div class="action-btns">' +
           '<button class="action-btn" onclick="openEditModal(\'' + docId + '\')"><i class="fas fa-pen"></i></button>' +
@@ -509,9 +553,6 @@
 
       tb.innerHTML = h;
 
-      // 🔥 Aktifkan inline editing pada kolom No. Order
-      enableInlineEditing();
-
       if (newRowIndices.size > 0) {
         setTimeout(function() {
           const nr = tb.querySelector('.new-row');
@@ -521,104 +562,7 @@
     }
 
     // ===========================================
-    // FUNGSI INLINE EDITING UNTUK NO. ORDER
-    // ===========================================
-    function enableInlineEditing() {
-      const cells = document.querySelectorAll('#tableBody .editable-no-order');
-      cells.forEach(function(cell) {
-        // Hindari bind ganda
-        if (cell.dataset.inlineListener) return;
-        cell.dataset.inlineListener = 'true';
-
-        cell.addEventListener('click', function(e) {
-          e.stopPropagation();
-          // Jika sudah ada input, abaikan
-          if (this.querySelector('input')) return;
-
-          // Ambil nilai lama dari atribut data-old-value atau dari teks
-          const currentVal = this.textContent.trim();
-          const oldVal = this.dataset.oldValue || currentVal;
-
-          const input = document.createElement('input');
-          input.type = 'text';
-          input.value = oldVal === '-' ? '' : oldVal;
-          // styling
-          Object.assign(input.style, {
-            width: '100%',
-            background: 'var(--bg-input)',
-            border: '1px solid var(--border-focus)',
-            borderRadius: '4px',
-            padding: '2px 6px',
-            fontFamily: 'inherit',
-            fontSize: 'inherit',
-            color: 'var(--text-primary)',
-            boxSizing: 'border-box',
-            outline: 'none'
-          });
-
-          this.innerHTML = '';
-          this.appendChild(input);
-          input.focus();
-          input.select();
-
-          // Fungsi untuk menyimpan
-          const save = function() {
-            const newVal = input.value.trim();
-            const row = this.closest('tr');
-            const docId = row ? row.dataset.docid : null;
-            if (!docId) {
-              this.textContent = currentVal || '-';
-              this.dataset.oldValue = currentVal || '-';
-              return;
-            }
-            // Jika nilai berubah, update ke Firestore
-            if (newVal !== oldVal) {
-              // Tampilkan indikator loading
-              this.style.opacity = '0.6';
-              db.collection(ORDERS_COL).doc(docId).update({
-                'No. Order': newVal
-              })
-              .then(function() {
-                showToast('No. Order berhasil diubah!', 'success');
-                this.textContent = newVal || '-';
-                this.dataset.oldValue = newVal || '-';
-                this.style.opacity = '1';
-              }.bind(this))
-              .catch(function(err) {
-                showToast('Gagal update: ' + err.message, 'error');
-                this.textContent = oldVal || '-';
-                this.dataset.oldValue = oldVal || '-';
-                this.style.opacity = '1';
-              }.bind(this));
-            } else {
-              // Tidak ada perubahan, kembalikan nilai
-              this.textContent = oldVal || '-';
-              this.dataset.oldValue = oldVal || '-';
-            }
-          }.bind(this);
-
-          const cancel = function() {
-            this.textContent = currentVal || '-';
-            this.dataset.oldValue = currentVal || '-';
-          }.bind(this);
-
-          input.addEventListener('blur', save);
-          input.addEventListener('keydown', function(ev) {
-            if (ev.key === 'Enter') {
-              ev.preventDefault();
-              this.blur();
-            } else if (ev.key === 'Escape') {
-              cancel();
-              this.parentElement.textContent = currentVal || '-';
-              this.parentElement.dataset.oldValue = currentVal || '-';
-            }
-          });
-        });
-      });
-    }
-
-    // ===========================================
-    // RENDER RIWAYAT (tetap pakai modal)
+    // RENDER RIWAYAT – tetap pakai modal
     // ===========================================
     function renderRiwayatTable() {
       const tb = document.getElementById('riwayatBody');
