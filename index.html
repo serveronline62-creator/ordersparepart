@@ -24,7 +24,7 @@
   </script>
 
   <style>
-    /* === GAYA CSS (sama seperti sebelumnya, dengan penyesuaian minimal) === */
+    /* ===== GAYA CSS (sama seperti sebelumnya) ===== */
     :root, [data-theme="dark"] {
       --bg-primary: #0b1120; --bg-secondary: #111827; --bg-card: #1a2332;
       --bg-card-hover: #1e293b; --bg-input: #0f172a; --border: #1e3a5f;
@@ -379,15 +379,13 @@
 
     // --- FUNGSI HITUNG LAMA PENGIRIMAN ---
     function hitungLamaPengiriman(tglOrder, tglSelesai) {
-      // Gunakan Tgl Order jika ada, fallback ke Tgl Pengajuan (dari data lain) tetapi kita tidak punya di sini,
-      // jadi kita akan terima parameter tglOrder yang sudah berupa string YYYY-MM-DD.
       if (!tglOrder || !tglSelesai) return '-';
       const d1 = new Date(tglOrder);
       const d2 = new Date(tglSelesai);
       if (isNaN(d1.getTime()) || isNaN(d2.getTime())) return '-';
       const diffTime = d2.getTime() - d1.getTime();
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      if (diffDays < 0) return '0 hari'; // jika selesai lebih awal dari order (tidak mungkin)
+      if (diffDays < 0) return '0 hari';
       return diffDays + ' hari';
     }
 
@@ -453,8 +451,7 @@
       for(let i=0;i<fd.length;i++){
         const o=fd[i], s=o['STATUS']||'PENDING', sc=getStatusClass(s), ri=o._rowIndex, di=o._docId, isNew=newRowIndices.has(ri);
         const no=o['No. Order']||'', tglSelesai=o['TANGGAL SELESAI']||'', ket=o['Keterangan Pemenuhan']||'', dl=canDelete(s);
-        // Hitung lama pengiriman
-        const tglOrder = o['TGL Order'] || ''; // bisa kosong
+        const tglOrder = o['TGL Order'] || '';
         const lama = hitungLamaPengiriman(tglOrder, tglSelesai);
         const dc=dl?'delete':'delete disabled-delete', dt=dl?'Hapus':'Hanya FINISH bisa dihapus', da=dl?`onclick="confirmDelete('${di}')"`:'onclick="showDeleteWarning()"';
         html+=`<tr class="${isNew?'new-row':''}">
@@ -481,7 +478,7 @@
         </tr>`;
       }
       tb.innerHTML=html;
-      // Attach double-click event untuk inline editing
+      // Pasang event double-click untuk inline editing
       document.querySelectorAll('.editable-inline').forEach(td=>{
         td.addEventListener('dblclick', function(e){
           e.stopPropagation();
@@ -491,45 +488,65 @@
       if(newRowIndices.size>0){ setTimeout(()=>{ const nr=tb.querySelector('.new-row'); if(nr) nr.scrollIntoView({behavior:'smooth',block:'center'}); },300); }
     }
 
-    // --- INLINE EDITING ---
+    // --- INLINE EDITING (diperbaiki agar nilai tetap tampil) ---
     function startInlineEdit(td){
-      const span=td.querySelector('span:first-child');
-      if(!span) return;
-      const currentText=span.textContent.trim();
-      const docId=td.dataset.docid;
-      const field=td.dataset.field;
+      const span = td.querySelector('span:first-child');
+      if (!span) return;
+      const currentText = span.textContent.trim();
+      const docId = td.dataset.docid;
+      const field = td.dataset.field;
       // Buat input
-      const input=document.createElement('input');
-      input.type='text';
-      input.className='inline-input';
-      input.value=currentText==='-' ? '' : currentText;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'inline-input';
+      // Isi dengan nilai yang ada (jika '-' maka kosongkan)
+      input.value = (currentText === '-') ? '' : currentText;
       span.replaceWith(input);
       input.focus();
       input.select();
 
       const save = () => {
-        const val=input.value.trim();
-        const newSpan=document.createElement('span');
-        newSpan.textContent=val || '-';
+        const val = input.value.trim();
+        // Buat span baru dengan nilai yang diinput (atau '-' jika kosong)
+        const newSpan = document.createElement('span');
+        newSpan.textContent = val || '-';
+        // Ganti input dengan span baru
         input.replaceWith(newSpan);
-        // Simpan ke Firebase
+        // Simpan ke Firebase jika ada perubahan
         if (docId && field) {
-          const updateObj={};
-          updateObj[field]=val;
+          // Jika nilai berubah dari sebelumnya, update
+          const updateObj = {};
+          updateObj[field] = val;
           db.collection('orders').doc(docId).update(updateObj)
-            .then(()=>{ showToast(`${field} berhasil diupdate!`,'success'); loadOrders(); })
-            .catch(er=>{ showToast('Error: '+er.message,'error'); });
+            .then(() => {
+              showToast(`${field} berhasil diupdate!`, 'success');
+              // Refresh data dari Firebase agar semua kolom sinkron
+              loadOrders();
+            })
+            .catch(er => {
+              showToast('Error: ' + er.message, 'error');
+              // Kembalikan nilai lama jika gagal
+              newSpan.textContent = currentText || '-';
+            });
         }
       };
+
       const cancel = () => {
-        const newSpan=document.createElement('span');
-        newSpan.textContent=currentText || '-';
+        const newSpan = document.createElement('span');
+        newSpan.textContent = currentText || '-';
         input.replaceWith(newSpan);
       };
+
+      // Simpan saat blur atau tekan Enter
       input.addEventListener('blur', save);
       input.addEventListener('keydown', function(e){
-        if(e.key==='Enter'){ e.preventDefault(); this.blur(); }
-        else if(e.key==='Escape'){ e.preventDefault(); cancel(); }
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this.blur();
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          cancel();
+        }
       });
     }
 
