@@ -15,7 +15,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js">
   </script>
   <style>
-    /* ===== CSS LENGKAP (sama seperti sebelumnya) ===== */
+    /* ===== CSS LENGKAP (sama seperti sebelumnya, tidak diubah) ===== */
     :root,
     [data-theme="dark"] {
       --bg-primary: #0b1120;
@@ -1793,6 +1793,9 @@
                   <th>Status</th>
                   <th>Teknisi</th>
                   <th>Tgl Pengajuan</th>
+                  <!-- KOLOM DIPINDAHKAN KE SINI -->
+                  <th>No. Order</th>
+                  <th>Order ke Pabrik</th>
                   <th>No. Service</th>
                   <th>Type (IDNO)</th>
                   <th>No. Serie</th>
@@ -1804,8 +1807,6 @@
                   <th>Nama Konsumen</th>
                   <th>No. HP</th>
                   <th>Tgl Order</th>
-                  <th>No. Order</th>
-                  <th>Order ke Pabrik</th>
                   <th>Keterangan</th>
                   <th>Aksi</th>
                 </tr>
@@ -1839,6 +1840,9 @@
                   <th>Status</th>
                   <th>Teknisi</th>
                   <th>Tgl Pengajuan</th>
+                  <!-- KOLOM DIPINDAHKAN KE SINI -->
+                  <th>No. Order</th>
+                  <th>Order ke Pabrik</th>
                   <th>No. Service</th>
                   <th>Type (IDNO)</th>
                   <th>No. Serie</th>
@@ -1850,8 +1854,6 @@
                   <th>Nama Konsumen</th>
                   <th>No. HP</th>
                   <th>Tgl Order</th>
-                  <th>No. Order</th>
-                  <th>Order ke Pabrik</th>
                   <th>Keterangan</th>
                   <th>Aksi</th>
                 </tr>
@@ -2516,7 +2518,6 @@
           td.textContent = currentValue || '-';
           return;
         }
-        // Boleh kosong
         var updates = { 'ORDER KE PABRIK': newValue };
         db.collection(ORDERS_COL).doc(docId).update(updates)
           .then(function() {
@@ -2591,6 +2592,13 @@
           '<td><span class="status-badge ' + sc + '"><span class="status-dot"></span>' + escapeHtml(s) + '</span></td>' +
           '<td class="name-cell">' + escapeHtml(o['TEKNISI'] || '') + '</td>' +
           '<td>' + formatDateDisplay(o['TGL PENGAJUAN ORD'] || '') + '</td>' +
+          // KOLOM DIPINDAHKAN KE SINI
+          '<td class="editable-cell" ondblclick="editNoOrder(\'' + o._docId +
+          '\', this)" title="Double‑klik untuk edit" style="color:var(--accent);font-weight:600;cursor:text;">' +
+          escapeHtml(no || '-') + '</td>' +
+          '<td class="editable-cell" ondblclick="editOrderPabrik(\'' + o._docId +
+          '\', this)" title="Double‑klik untuk edit" style="cursor:text;">' +
+          escapeHtml(op || '-') + '</td>' +
           '<td>' + escapeHtml(o['NO. SERVICE CASE'] || '') + '</td>' +
           '<td>' + escapeHtml(o['TYPE (IDNO)'] || '') + '</td>' +
           '<td>' + escapeHtml(o['NO. SERIE'] || '') + '</td>' +
@@ -2602,12 +2610,6 @@
           '<td class="name-cell">' + escapeHtml(o['NAMA KONSUMEN'] || '') + '</td>' +
           '<td>' + escapeHtml(o['NO. HP'] || '') + '</td>' +
           '<td class="editable-cell" ' + da + '>' + formatDateDisplay(to) + '</td>' +
-          '<td class="editable-cell" ondblclick="editNoOrder(\'' + o._docId +
-          '\', this)" title="Double‑klik untuk edit" style="color:var(--accent);font-weight:600;cursor:text;">' +
-          escapeHtml(no || '-') + '</td>' +
-          '<td class="editable-cell" ondblclick="editOrderPabrik(\'' + o._docId +
-          '\', this)" title="Double‑klik untuk edit" style="cursor:text;">' +
-          escapeHtml(op || '-') + '</td>' +
           '<td class="editable-cell" ' + da + '>' + escapeHtml(k || '-') + '</td>' +
           '<td><div class="action-btns"><button class="action-btn" ' + da +
           '><i class="fas fa-pen"></i></button><button class="action-btn locked" title="Hanya FINISH bisa dihapus"><i class="fas fa-trash"></i></button></div></td>' +
@@ -2671,6 +2673,15 @@
           '<td><span class="status-badge finish"><span class="status-dot"></span>FINISH</span></td>' +
           '<td class="name-cell">' + escapeHtml(o['TEKNISI'] || '') + '</td>' +
           '<td>' + formatDateDisplay(o['TGL PENGAJUAN ORD'] || '') + '</td>' +
+          // KOLOM DIPINDAHKAN KE SINI
+          '<td class="' + cellClass + '" ' +
+          (canEdit ? 'ondblclick="editNoOrder(\'' + o._docId + '\', this)" title="Double‑klik untuk edit"' : '') +
+          ' style="' + (canEdit ? 'cursor:text;' : '') + 'color:var(--info);font-weight:600;">' +
+          escapeHtml(no || '-') + '</td>' +
+          '<td class="' + cellClass + '" ' +
+          (canEdit ? 'ondblclick="editOrderPabrik(\'' + o._docId + '\', this)" title="Double‑klik untuk edit"' : '') +
+          ' style="' + (canEdit ? 'cursor:text;' : '') + '">' +
+          escapeHtml(op || '-') + '</td>' +
           '<td>' + escapeHtml(o['NO. SERVICE CASE'] || '') + '</td>' +
           '<td>' + escapeHtml(o['TYPE (IDNO)'] || '') + '</td>' +
           '<td>' + escapeHtml(o['NO. SERIE'] || '') + '</td>' +
@@ -2683,14 +2694,6 @@
           '<td>' + escapeHtml(o['NO. HP'] || '') + '</td>' +
           '<td class="' + cellClass + '" ' + editAction + o._docId + editActionClose + '>' + formatDateDisplay(to) +
           '</td>' +
-          '<td class="' + cellClass + '" ' +
-          (canEdit ? 'ondblclick="editNoOrder(\'' + o._docId + '\', this)" title="Double‑klik untuk edit"' : '') +
-          ' style="' + (canEdit ? 'cursor:text;' : '') + 'color:var(--info);font-weight:600;">' +
-          escapeHtml(no || '-') + '</td>' +
-          '<td class="' + cellClass + '" ' +
-          (canEdit ? 'ondblclick="editOrderPabrik(\'' + o._docId + '\', this)" title="Double‑klik untuk edit"' : '') +
-          ' style="' + (canEdit ? 'cursor:text;' : '') + '">' +
-          escapeHtml(op || '-') + '</td>' +
           '<td class="' + cellClass + '" ' + editAction + o._docId + editActionClose + '>' + escapeHtml(k || '-') +
           '</td>' +
           '<td><div class="action-btns"><button class="action-btn' + btnEditClass + '" ' + editAction + o._docId +
@@ -2818,16 +2821,18 @@
       b.disabled = true;
       b.innerHTML = '<div class="spinner"></div>';
       try {
-        var eh = ['No', 'Status', 'Teknisi', 'Tgl Pengajuan', 'No. Service', 'Type (IDNO)', 'No. Serie', 'No Gudang',
-          'Nama Part', 'QTY', 'Prod.', 'Layanan', 'Nama Konsumen', 'No. HP', 'Tgl Order', 'No. Order',
-          'Order ke Pabrik', 'Keterangan'
+        var eh = ['No', 'Status', 'Teknisi', 'Tgl Pengajuan',
+          'No. Order', 'Order ke Pabrik', // <-- dipindah ke sini
+          'No. Service', 'Type (IDNO)', 'No. Serie', 'No Gudang',
+          'Nama Part', 'QTY', 'Prod.', 'Layanan', 'Nama Konsumen', 'No. HP', 'Tgl Order', 'Keterangan'
         ];
         var rows = fd.map(function(o, i) {
           return [i + 1, o['STATUS'] || '', o['TEKNISI'] || '', formatDateDisplay(o['TGL PENGAJUAN ORD'] || ''),
+            o['No. Order'] || '', o['ORDER KE PABRIK'] || '',
             o['NO. SERVICE CASE'] || '', o['TYPE (IDNO)'] || '', o['NO. SERIE'] || '', o['NO GUDANG'] || '',
             o['NAMA PART'] || '', o['QTY'] || '', o['PROD.'] || '', o['LAYANAN'] || '',
             o['NAMA KONSUMEN'] || '', o['NO. HP'] || '', formatDateDisplay(o['TGL Order'] || ''),
-            o['No. Order'] || '', o['ORDER KE PABRIK'] || '', o['Keterangan Pemenuhan'] || ''
+            o['Keterangan Pemenuhan'] || ''
           ];
         });
         var wb = XLSX.utils.book_new(),
@@ -2900,7 +2905,7 @@
     document.getElementById('inputModal').addEventListener('click', function(e) { if (e.target === this) closeInputModal(); });
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
 
-    console.log('✅ Aplikasi siap dengan kolom Order ke Pabrik!');
+    console.log('✅ Aplikasi siap - kolom No. Order & Order ke Pabrik dipindahkan setelah Tgl Pengajuan.');
   </script>
 </body>
 </html>
