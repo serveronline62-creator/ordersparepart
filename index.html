@@ -15,7 +15,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js">
   </script>
   <style>
-    /* ===== CSS LENGKAP (sama seperti sebelumnya, tidak diubah) ===== */
+    /* ===== CSS LENGKAP (sama seperti sebelumnya) ===== */
     :root,
     [data-theme="dark"] {
       --bg-primary: #0b1120;
@@ -1805,7 +1805,7 @@
                   <th>Nama Konsumen</th>
                   <th>No. HP</th>
                   <th>Tgl Order</th>
-                  <th>Order ke Pabrik</th>   <!-- DIPINDAH KE SINI -->
+                  <th>Order ke Pabrik</th>
                   <th>Keterangan</th>
                   <th>Aksi</th>
                 </tr>
@@ -1851,7 +1851,7 @@
                   <th>Nama Konsumen</th>
                   <th>No. HP</th>
                   <th>Tgl Order</th>
-                  <th>Order ke Pabrik</th>   <!-- DIPINDAH KE SINI -->
+                  <th>Order ke Pabrik</th>
                   <th>Keterangan</th>
                   <th>Aksi</th>
                 </tr>
@@ -1912,6 +1912,7 @@
         <div style="background:rgba(128,128,128,0.1);border-radius:var(--radius);padding:0.85rem 1rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap;"><span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--accent);font-weight:700;" id="modalOrderNo"></span><span style="color:var(--text-muted);">|</span><span style="font-size:0.78rem;color:var(--text-secondary);" id="modalPartInfo"></span></div>
         <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="modalStatus"><option value="PENDING">PENDING</option><option value="PROSES">PROSES</option><option value="READY">READY</option><option value="FINISH">FINISH</option></select></div>
         <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Tgl Order</span></label><input class="form-input" type="date" id="modalTglOrder" /></div>
+        <!-- No. Order dihilangkan dari modal -->
         <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Order ke Pabrik</span></label><input class="form-input" type="text" id="modalOrderPabrik" /></div>
         <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Keterangan</span></label><textarea class="form-textarea" id="modalKeterangan"></textarea></div>
       </div>
@@ -2397,7 +2398,6 @@
           'TYPE (IDNO)': d['TYPE (IDNO)'],
           'NO. SERIE': d['NO. SERIE'] || '',
           'NO GUDANG': d['NO GUDANG'] || '',
-          'ORDER KE PABRIK': d['ORDER KE PABRIK'] || '',
           'NAMA PART': d['NAMA PART'],
           'QTY': d['QTY'],
           'PROD.': d['PROD.'],
@@ -2425,66 +2425,8 @@
       });
     }
 
-    // ===== INLINE EDIT: No. Order =====
-    function editNoOrder(docId, td) {
-      if (td.querySelector('input')) return;
-      var currentValue = td.textContent.trim();
-      var displayValue = (currentValue === '-' ? '' : currentValue);
-      var input = document.createElement('input');
-      input.type = 'text';
-      input.value = displayValue;
-      input.className = 'form-input';
-      input.style.width = '100%';
-      input.style.minWidth = '80px';
-      input.style.background = 'var(--bg-input)';
-      input.style.border = '1px solid var(--border-focus)';
-      input.style.borderRadius = 'var(--radius)';
-      input.style.padding = '4px 8px';
-      input.style.fontFamily = 'inherit';
-      input.style.fontSize = '0.75rem';
-      input.style.color = 'var(--text-primary)';
-      td.textContent = '';
-      td.appendChild(input);
-      input.focus();
-      input.select();
-
-      var save = function() {
-        var newValue = input.value.trim();
-        if (newValue === currentValue || (newValue === '' && currentValue === '-')) {
-          td.textContent = currentValue || '-';
-          return;
-        }
-        if (!newValue) {
-          showToast('No. Order tidak boleh kosong!', 'error');
-          td.textContent = currentValue || '-';
-          return;
-        }
-        var updates = { 'No. Order': newValue };
-        db.collection(ORDERS_COL).doc(docId).update(updates)
-          .then(function() {
-            showToast('No. Order berhasil diupdate!', 'success');
-            td.textContent = newValue;
-            var order = allOrders.find(function(o) { return o._docId === docId; });
-            if (order) order['No. Order'] = newValue;
-          })
-          .catch(function(err) {
-            showToast('Gagal update: ' + err.message, 'error');
-            td.textContent = currentValue || '-';
-          });
-      };
-
-      var cancel = function() {
-        td.textContent = currentValue || '-';
-      };
-
-      input.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') { e.preventDefault();
-          input.blur(); }
-        if (e.key === 'Escape') { cancel(); }
-      });
-      input.addEventListener('blur', save);
-    }
-
+    // ===== INLINE EDIT: No. Order (DIHAPUS - tidak digunakan) =====
+    // Fungsi editNoOrder tidak lagi digunakan, hanya untuk referensi
     // ===== INLINE EDIT: Order ke Pabrik =====
     function editOrderPabrik(docId, td) {
       if (td.querySelector('input')) return;
@@ -2540,7 +2482,7 @@
       input.addEventListener('blur', save);
     }
 
-    // ===== RENDER AKTIF (urutan kolom baru) =====
+    // ===== RENDER AKTIF (No. Order tidak bisa diedit) =====
     function renderAktifTable() {
       var tb = document.getElementById('tableBody'),
         es = document.getElementById('emptyState'),
@@ -2588,9 +2530,8 @@
           '<td><span class="status-badge ' + sc + '"><span class="status-dot"></span>' + escapeHtml(s) + '</span></td>' +
           '<td class="name-cell">' + escapeHtml(o['TEKNISI'] || '') + '</td>' +
           '<td>' + formatDateDisplay(o['TGL PENGAJUAN ORD'] || '') + '</td>' +
-          '<td class="editable-cell" ondblclick="editNoOrder(\'' + o._docId +
-          '\', this)" title="Double‑klik untuk edit" style="color:var(--accent);font-weight:600;cursor:text;">' +
-          escapeHtml(no || '-') + '</td>' +
+          // No. Order - tidak ada ondblclick, class locked-cell
+          '<td class="locked-cell" style="color:var(--text-primary);font-weight:600;">' + escapeHtml(no || '-') + '</td>' +
           '<td>' + escapeHtml(o['NO. SERVICE CASE'] || '') + '</td>' +
           '<td>' + escapeHtml(o['TYPE (IDNO)'] || '') + '</td>' +
           '<td>' + escapeHtml(o['NO. SERIE'] || '') + '</td>' +
@@ -2619,7 +2560,7 @@
       }
     }
 
-    // ===== RENDER RIWAYAT (urutan kolom baru) =====
+    // ===== RENDER RIWAYAT (No. Order tidak bisa diedit) =====
     function renderRiwayatTable() {
       var tb = document.getElementById('riwayatBody'),
         es = document.getElementById('emptyRiwayat'),
@@ -2668,10 +2609,8 @@
           '<td><span class="status-badge finish"><span class="status-dot"></span>FINISH</span></td>' +
           '<td class="name-cell">' + escapeHtml(o['TEKNISI'] || '') + '</td>' +
           '<td>' + formatDateDisplay(o['TGL PENGAJUAN ORD'] || '') + '</td>' +
-          '<td class="' + cellClass + '" ' +
-          (canEdit ? 'ondblclick="editNoOrder(\'' + o._docId + '\', this)" title="Double‑klik untuk edit"' : '') +
-          ' style="' + (canEdit ? 'cursor:text;' : '') + 'color:var(--info);font-weight:600;">' +
-          escapeHtml(no || '-') + '</td>' +
+          // No. Order - tidak ada ondblclick, selalu locked
+          '<td class="locked-cell" style="color:var(--text-primary);font-weight:600;">' + escapeHtml(no || '-') + '</td>' +
           '<td>' + escapeHtml(o['NO. SERVICE CASE'] || '') + '</td>' +
           '<td>' + escapeHtml(o['TYPE (IDNO)'] || '') + '</td>' +
           '<td>' + escapeHtml(o['NO. SERIE'] || '') + '</td>' +
@@ -2805,7 +2744,7 @@
       });
     }
 
-    // ===== EXCEL (urutan kolom baru) =====
+    // ===== EXCEL =====
     function downloadExcel(src) {
       var fd = src === 'riwayat' ? getRiwayatOrders() : getFilteredAktif();
       if (fd.length === 0) { showToast('Tidak ada data!', 'error'); return; }
@@ -2897,7 +2836,7 @@
     document.getElementById('inputModal').addEventListener('click', function(e) { if (e.target === this) closeInputModal(); });
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
 
-    console.log('✅ Aplikasi siap - Order ke Pabrik dipindah setelah Tgl Order.');
+    console.log('✅ Aplikasi siap - No. Order tidak bisa diedit sama sekali.');
   </script>
 </body>
 </html>
