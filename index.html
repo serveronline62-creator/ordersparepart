@@ -15,7 +15,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js">
   </script>
   <style>
-    /* ===== CSS LENGKAP (sama seperti sebelumnya, tidak diubah) ===== */
     :root,
     [data-theme="dark"] {
       --bg-primary: #0b1120;
@@ -1793,7 +1792,6 @@
                   <th>Status</th>
                   <th>Teknisi</th>
                   <th>Tgl Pengajuan</th>
-                  <!-- KOLOM NO. ORDER DIHAPUS -->
                   <th>No. Service</th>
                   <th>Type (IDNO)</th>
                   <th>No. Serie</th>
@@ -1805,6 +1803,8 @@
                   <th>Nama Konsumen</th>
                   <th>No. HP</th>
                   <th>Tgl Order</th>
+                  <th>TGL TERIMA PART</th>
+                  <th>Jumlah</th>
                   <th>Order ke Pabrik</th>
                   <th>Keterangan</th>
                   <th>Aksi</th>
@@ -1839,7 +1839,6 @@
                   <th>Status</th>
                   <th>Teknisi</th>
                   <th>Tgl Pengajuan</th>
-                  <!-- KOLOM NO. ORDER DIHAPUS -->
                   <th>No. Service</th>
                   <th>Type (IDNO)</th>
                   <th>No. Serie</th>
@@ -1851,6 +1850,8 @@
                   <th>Nama Konsumen</th>
                   <th>No. HP</th>
                   <th>Tgl Order</th>
+                  <th>TGL TERIMA PART</th>
+                  <th>Jumlah</th>
                   <th>Order ke Pabrik</th>
                   <th>Keterangan</th>
                   <th>Aksi</th>
@@ -1894,6 +1895,18 @@
             <div class="form-group"><label class="form-label">Nama Konsumen <span class="required">*</span></label><input class="form-input" type="text" name="NAMA KONSUMEN" required /></div>
             <div class="form-group"><label class="form-label">No. HP <span class="required">*</span></label><input class="form-input" type="tel" name="NO. HP" required /></div>
           </div>
+          <div class="form-section-title">Informasi Penerimaan Part</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">TGL TERIMA PART</label>
+              <input class="form-input" type="date" name="TGL TERIMA PART" id="inpTglTerimaPart" onchange="hitungJumlahHari()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Jumlah (hari)</label>
+              <input class="form-input" type="number" name="JUMLAH" id="inpJumlah" readonly style="background:var(--bg-card);cursor:default;font-weight:700;color:var(--accent);" />
+              <small style="color:var(--text-muted);font-size:0.65rem;">Otomatis terisi dari selisih Tgl Pengajuan</small>
+            </div>
+          </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -1912,9 +1925,10 @@
         <div style="background:rgba(128,128,128,0.1);border-radius:var(--radius);padding:0.85rem 1rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap;"><span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--accent);font-weight:700;" id="modalOrderNo"></span><span style="color:var(--text-muted);">|</span><span style="font-size:0.78rem;color:var(--text-secondary);" id="modalPartInfo"></span></div>
         <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="modalStatus"><option value="PENDING">PENDING</option><option value="PROSES">PROSES</option><option value="READY">READY</option><option value="FINISH">FINISH</option></select></div>
         <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Tgl Order</span></label><input class="form-input" type="date" id="modalTglOrder" /></div>
+        <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> TGL TERIMA PART</span></label><input class="form-input" type="date" id="modalTglTerimaPart" onchange="editHitungJumlahHari()" /></div>
+        <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Jumlah (hari)</span></label><input class="form-input" type="number" id="modalJumlah" readonly style="background:var(--bg-card);cursor:default;font-weight:700;color:var(--accent);" /></div>
         <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Order ke Pabrik</span></label><input class="form-input" type="text" id="modalOrderPabrik" /></div>
         <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Keterangan</span></label><textarea class="form-textarea" id="modalKeterangan"></textarea></div>
-        <!-- FIELD NO. ORDER TIDAK ADA -->
       </div>
       <div class="modal-footer"><button class="btn btn-secondary btn-sm" onclick="closeEditModal()">Batal</button><button class="btn btn-primary btn-sm" onclick="submitUpdate()" id="modalSaveBtn"><i class="fas fa-save"></i> Simpan</button></div>
     </div>
@@ -2012,6 +2026,46 @@
 
     function getRiwayatOrders() {
       return allOrders.filter(function(o) { return (o['STATUS'] || '').toUpperCase() === 'FINISH'; });
+    }
+
+    // ===== FUNGSI HITUNG JUMLAH HARI =====
+    function hitungJumlahHari() {
+      var tglPengajuan = document.getElementById('inpTglPengajuan').value;
+      var tglTerima = document.getElementById('inpTglTerimaPart').value;
+      var target = document.getElementById('inpJumlah');
+
+      if (!tglPengajuan || !tglTerima) {
+        target.value = '';
+        return;
+      }
+
+      var d1 = new Date(tglPengajuan);
+      var d2 = new Date(tglTerima);
+      var diffTime = Math.abs(d2 - d1);
+      var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      target.value = diffDays;
+    }
+
+    function editHitungJumlahHari() {
+      var modal = document.getElementById('editModal');
+      var docId = document.getElementById('modalRowIndex').value;
+      var order = allOrders.find(function(o) { return o._docId === docId; });
+      if (!order) return;
+
+      var tglPengajuan = order['TGL PENGAJUAN ORD'] || '';
+      var tglTerima = document.getElementById('modalTglTerimaPart').value;
+      var target = document.getElementById('modalJumlah');
+
+      if (!tglPengajuan || !tglTerima) {
+        target.value = '';
+        return;
+      }
+
+      var d1 = new Date(tglPengajuan);
+      var d2 = new Date(tglTerima);
+      var diffTime = Math.abs(d2 - d1);
+      var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      target.value = diffDays;
     }
 
     // ===== AUTH FUNCTIONS =====
@@ -2333,6 +2387,8 @@
     function resetForm() {
       document.getElementById('orderForm').reset();
       setDefaultDate();
+      document.getElementById('inpTglTerimaPart').value = '';
+      document.getElementById('inpJumlah').value = '';
     }
 
     function setDefaultDate() {
@@ -2362,7 +2418,7 @@
         });
     }
 
-    // ===== HANDLE SUBMIT (No. Order tetap disimpan, tapi tidak ditampilkan) =====
+    // ===== HANDLE SUBMIT =====
     function handleSubmit(e) {
       e.preventDefault();
       var f = document.getElementById('orderForm'),
@@ -2381,6 +2437,18 @@
         if (!d[rf[i]]) { showToast('"' + (fl[rf[i]] || rf[i]) + '" wajib diisi!', 'error'); return; }
       }
       if (parseInt(d['QTY']) < 1) { showToast('QTY harus minimal 1!', 'error'); return; }
+
+      // Hitung jumlah hari sebelum simpan
+      var tglPengajuan = d['TGL PENGAJUAN ORD'];
+      var tglTerima = d['TGL TERIMA PART'] || '';
+      var jumlah = '';
+      if (tglPengajuan && tglTerima) {
+        var d1 = new Date(tglPengajuan);
+        var d2 = new Date(tglTerima);
+        var diffTime = Math.abs(d2 - d1);
+        var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        jumlah = String(diffDays);
+      }
 
       var sb = document.getElementById('submitBtn'),
         fl2 = document.getElementById('formLoading');
@@ -2405,7 +2473,9 @@
           'NAMA KONSUMEN': d['NAMA KONSUMEN'],
           'NO. HP': d['NO. HP'],
           'Tgl Order': '',
-          'No. Order': orderNo,          // tetap disimpan
+          'No. Order': orderNo,
+          'TGL TERIMA PART': tglTerima,
+          'JUMLAH': jumlah,
           'ORDER KE PABRIK': d['ORDER KE PABRIK'] || '',
           'Keterangan Pemenuhan': '',
           'createdAt': firebase.firestore.FieldValue.serverTimestamp(),
@@ -2426,7 +2496,89 @@
       });
     }
 
-    // ===== INLINE EDIT: Order ke Pabrik (No. Order tidak ada) =====
+    // ===== INLINE EDIT: Tgl Terima Part =====
+    function editTglTerimaPart(docId, td) {
+      if (td.querySelector('input')) return;
+      var currentValue = td.textContent.trim();
+      var displayValue = (currentValue === '-' ? '' : currentValue);
+      // Konversi format DD/MM/YYYY ke YYYY-MM-DD untuk input date
+      if (displayValue && displayValue.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+        var parts = displayValue.split('/');
+        displayValue = parts[2] + '-' + parts[1] + '-' + parts[0];
+      }
+      var input = document.createElement('input');
+      input.type = 'date';
+      input.value = displayValue;
+      input.className = 'form-input';
+      input.style.width = '100%';
+      input.style.minWidth = '120px';
+      input.style.background = 'var(--bg-input)';
+      input.style.border = '1px solid var(--border-focus)';
+      input.style.borderRadius = 'var(--radius)';
+      input.style.padding = '4px 8px';
+      input.style.fontFamily = 'inherit';
+      input.style.fontSize = '0.75rem';
+      input.style.color = 'var(--text-primary)';
+      td.textContent = '';
+      td.appendChild(input);
+      input.focus();
+      input.select();
+
+      var save = function() {
+        var newValue = input.value;
+        var order = allOrders.find(function(o) { return o._docId === docId; });
+        var tglPengajuan = order ? order['TGL PENGAJUAN ORD'] : '';
+
+        if (newValue === currentValue || (newValue === '' && currentValue === '-')) {
+          td.textContent = currentValue || '-';
+          return;
+        }
+
+        // Hitung jumlah hari
+        var jumlah = '';
+        if (tglPengajuan && newValue) {
+          var d1 = new Date(tglPengajuan);
+          var d2 = new Date(newValue);
+          var diffTime = Math.abs(d2 - d1);
+          var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          jumlah = String(diffDays);
+        }
+
+        var updates = {
+          'TGL TERIMA PART': newValue,
+          'JUMLAH': jumlah
+        };
+        db.collection(ORDERS_COL).doc(docId).update(updates)
+          .then(function() {
+            showToast('TGL TERIMA PART & Jumlah berhasil diupdate!', 'success');
+            var formatted = newValue ? formatDateDisplay(newValue) : '-';
+            td.textContent = formatted;
+            if (order) {
+              order['TGL TERIMA PART'] = newValue;
+              order['JUMLAH'] = jumlah;
+            }
+            // Refresh tabel untuk update kolom Jumlah
+            renderAll();
+          })
+          .catch(function(err) {
+            showToast('Gagal update: ' + err.message, 'error');
+            td.textContent = currentValue || '-';
+          });
+      };
+
+      var cancel = function() {
+        td.textContent = currentValue || '-';
+      };
+
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault();
+          input.blur(); }
+        if (e.key === 'Escape') { cancel(); }
+      });
+      input.addEventListener('blur', save);
+    }
+
+    // ===== INLINE EDIT: Order ke Pabrik =====
     function editOrderPabrik(docId, td) {
       if (td.querySelector('input')) return;
       var currentValue = td.textContent.trim();
@@ -2481,7 +2633,7 @@
       input.addEventListener('blur', save);
     }
 
-    // ===== RENDER AKTIF (tanpa No. Order) =====
+    // ===== RENDER AKTIF =====
     function renderAktifTable() {
       var tb = document.getElementById('tableBody'),
         es = document.getElementById('emptyState'),
@@ -2518,7 +2670,9 @@
           sc = getStatusClass(s),
           ri = o._rowIndex,
           isNew = newRowIndices.has(ri),
-          to = o['TGL Order'] || '',
+          to = o['Tgl Order'] || '',
+          ttp = o['TGL TERIMA PART'] || '',
+          jml = o['JUMLAH'] || '',
           op = o['ORDER KE PABRIK'] || '',
           k = o['Keterangan Pemenuhan'] || '',
           da = 'onclick="openEditModal(\'' + o._docId + '\')"';
@@ -2539,6 +2693,10 @@
           '<td class="name-cell">' + escapeHtml(o['NAMA KONSUMEN'] || '') + '</td>' +
           '<td>' + escapeHtml(o['NO. HP'] || '') + '</td>' +
           '<td class="editable-cell" ' + da + '>' + formatDateDisplay(to) + '</td>' +
+          '<td class="editable-cell" ondblclick="editTglTerimaPart(\'' + o._docId +
+          '\', this)" title="Double‑klik untuk edit" style="cursor:text;">' +
+          formatDateDisplay(ttp) + '</td>' +
+          '<td style="font-weight:700;color:var(--accent);">' + escapeHtml(jml || '-') + '</td>' +
           '<td class="editable-cell" ondblclick="editOrderPabrik(\'' + o._docId +
           '\', this)" title="Double‑klik untuk edit" style="cursor:text;">' +
           escapeHtml(op || '-') + '</td>' +
@@ -2556,7 +2714,7 @@
       }
     }
 
-    // ===== RENDER RIWAYAT (tanpa No. Order) =====
+    // ===== RENDER RIWAYAT =====
     function renderRiwayatTable() {
       var tb = document.getElementById('riwayatBody'),
         es = document.getElementById('emptyRiwayat'),
@@ -2595,7 +2753,9 @@
       var h = '';
       for (var i = 0; i < fd.length; i++) {
         var o = fd[i],
-          to = o['TGL Order'] || '',
+          to = o['Tgl Order'] || '',
+          ttp = o['TGL TERIMA PART'] || '',
+          jml = o['JUMLAH'] || '',
           op = o['ORDER KE PABRIK'] || '',
           k = o['Keterangan Pemenuhan'] || '';
 
@@ -2616,6 +2776,11 @@
           '<td>' + escapeHtml(o['NO. HP'] || '') + '</td>' +
           '<td class="' + cellClass + '" ' + editAction + o._docId + editActionClose + '>' + formatDateDisplay(to) +
           '</td>' +
+          '<td class="' + cellClass + '" ' +
+          (canEdit ? 'ondblclick="editTglTerimaPart(\'' + o._docId + '\', this)" title="Double‑klik untuk edit"' : '') +
+          ' style="' + (canEdit ? 'cursor:text;' : '') + '">' +
+          formatDateDisplay(ttp) + '</td>' +
+          '<td style="font-weight:700;color:var(--info);">' + escapeHtml(jml || '-') + '</td>' +
           '<td class="' + cellClass + '" ' +
           (canEdit ? 'ondblclick="editOrderPabrik(\'' + o._docId + '\', this)" title="Double‑klik untuk edit"' : '') +
           ' style="' + (canEdit ? 'cursor:text;' : '') + '">' +
@@ -2660,7 +2825,7 @@
       }, 30);
     }
 
-    // ===== EDIT MODAL (tanpa No. Order) =====
+    // ===== EDIT MODAL =====
     function openEditModal(docId) {
       var o = allOrders.find(function(x) { return x._docId === docId; });
       if (!o) return;
@@ -2670,10 +2835,11 @@
       }
       document.getElementById('modalRowIndex').value = docId;
       document.getElementById('modalStatus').value = (o['STATUS'] || 'PENDING').toUpperCase();
-      document.getElementById('modalTglOrder').value = o['TGL Order'] || '';
+      document.getElementById('modalTglOrder').value = o['Tgl Order'] || '';
+      document.getElementById('modalTglTerimaPart').value = o['TGL TERIMA PART'] || '';
+      document.getElementById('modalJumlah').value = o['JUMLAH'] || '';
       document.getElementById('modalOrderPabrik').value = o['ORDER KE PABRIK'] || '';
       document.getElementById('modalKeterangan').value = o['Keterangan Pemenuhan'] || '';
-      // Tampilkan No. Order hanya sebagai informasi (tidak bisa diedit)
       document.getElementById('modalOrderNo').textContent = '#' + (o['No. Order'] || '-');
       document.getElementById('modalPartInfo').textContent = (o['NAMA PART'] || '-') + ' | ' + (o['NAMA KONSUMEN'] || '-');
       document.getElementById('editModal').classList.add('active');
@@ -2681,12 +2847,27 @@
 
     function submitUpdate() {
       var docId = document.getElementById('modalRowIndex').value;
+      var tglTerima = document.getElementById('modalTglTerimaPart').value;
+      var order = allOrders.find(function(o) { return o._docId === docId; });
+      var tglPengajuan = order ? order['TGL PENGAJUAN ORD'] : '';
+
+      // Hitung jumlah hari
+      var jumlah = document.getElementById('modalJumlah').value;
+      if (tglPengajuan && tglTerima) {
+        var d1 = new Date(tglPengajuan);
+        var d2 = new Date(tglTerima);
+        var diffTime = Math.abs(d2 - d1);
+        var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        jumlah = String(diffDays);
+      }
+
       var updates = {
         'STATUS': document.getElementById('modalStatus').value,
-        'TGL Order': document.getElementById('modalTglOrder').value,
+        'Tgl Order': document.getElementById('modalTglOrder').value,
+        'TGL TERIMA PART': tglTerima,
+        'JUMLAH': jumlah,
         'ORDER KE PABRIK': document.getElementById('modalOrderPabrik').value,
         'Keterangan Pemenuhan': document.getElementById('modalKeterangan').value
-        // No. Order tidak diupdate
       };
       var sb = document.getElementById('modalSaveBtn');
       sb.disabled = true;
@@ -2739,7 +2920,7 @@
       });
     }
 
-    // ===== EXCEL (tanpa No. Order) =====
+    // ===== EXCEL =====
     function downloadExcel(src) {
       var fd = src === 'riwayat' ? getRiwayatOrders() : getFilteredAktif();
       if (fd.length === 0) { showToast('Tidak ada data!', 'error'); return; }
@@ -2749,14 +2930,15 @@
       try {
         var eh = ['No', 'Status', 'Teknisi', 'Tgl Pengajuan',
           'No. Service', 'Type (IDNO)', 'No. Serie', 'No Gudang',
-          'Nama Part', 'QTY', 'Prod.', 'Layanan', 'Nama Konsumen', 'No. HP', 'Tgl Order',
-          'Order ke Pabrik', 'Keterangan'
+          'Nama Part', 'QTY', 'Prod.', 'Layanan', 'Nama Konsumen', 'No. HP',
+          'Tgl Order', 'TGL TERIMA PART', 'Jumlah', 'Order ke Pabrik', 'Keterangan'
         ];
         var rows = fd.map(function(o, i) {
           return [i + 1, o['STATUS'] || '', o['TEKNISI'] || '', formatDateDisplay(o['TGL PENGAJUAN ORD'] || ''),
             o['NO. SERVICE CASE'] || '', o['TYPE (IDNO)'] || '', o['NO. SERIE'] || '', o['NO GUDANG'] || '',
             o['NAMA PART'] || '', o['QTY'] || '', o['PROD.'] || '', o['LAYANAN'] || '',
-            o['NAMA KONSUMEN'] || '', o['NO. HP'] || '', formatDateDisplay(o['TGL Order'] || ''),
+            o['NAMA KONSUMEN'] || '', o['NO. HP'] || '', formatDateDisplay(o['Tgl Order'] || ''),
+            formatDateDisplay(o['TGL TERIMA PART'] || ''), o['JUMLAH'] || '',
             o['ORDER KE PABRIK'] || '', o['Keterangan Pemenuhan'] || ''
           ];
         });
@@ -2830,7 +3012,7 @@
     document.getElementById('inputModal').addEventListener('click', function(e) { if (e.target === this) closeInputModal(); });
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
 
-    console.log('✅ Aplikasi siap - No. Order telah dihapus dari tampilan.');
+    console.log('✅ Aplikasi siap - TGL TERIMA PART & Jumlah telah ditambahkan.');
   </script>
 </body>
 </html>
