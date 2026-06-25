@@ -151,7 +151,7 @@
       outline-offset: 2px;
     }
 
-    /* AUTH */
+    /* ===== AUTH ===== */
     .auth-screen {
       position: fixed;
       inset: 0;
@@ -422,7 +422,7 @@
       min-height: 14px;
     }
 
-    /* NAVBAR */
+    /* ===== NAVBAR ===== */
     .user-menu {
       position: relative;
     }
@@ -688,7 +688,7 @@
       opacity: 0;
     }
 
-    /* MAIN */
+    /* ===== MAIN ===== */
     .main-container {
       position: relative;
       z-index: 1;
@@ -752,7 +752,7 @@
       display: block;
     }
 
-    /* STATS */
+    /* ===== STATS ===== */
     .stats-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -861,7 +861,7 @@
       margin-top: 2px;
     }
 
-    /* FORM */
+    /* ===== FORM ===== */
     .form-section-title {
       font-size: 0.75rem;
       font-weight: 700;
@@ -941,7 +941,7 @@
       min-height: 70px;
     }
 
-    /* BUTTONS */
+    /* ===== BUTTONS ===== */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -1011,7 +1011,7 @@
       background: linear-gradient(135deg, #228b4f, #1d6f42);
     }
 
-    /* TABLE */
+    /* ===== TABLE ===== */
     .table-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -1189,7 +1189,7 @@
       }
     }
 
-    /* STATUS BADGE */
+    /* ===== STATUS BADGE ===== */
     .status-badge {
       display: inline-flex;
       align-items: center;
@@ -1251,7 +1251,7 @@
       background: #60a5fa;
     }
 
-    /* ACTION */
+    /* ===== ACTION ===== */
     .action-btns {
       display: flex;
       gap: 5px;
@@ -1286,7 +1286,7 @@
       pointer-events: none;
     }
 
-    /* SKELETON */
+    /* ===== SKELETON ===== */
     .table-loading-skeleton {
       padding: 2rem;
       text-align: center;
@@ -1316,7 +1316,7 @@
       }
     }
 
-    /* EMPTY */
+    /* ===== EMPTY ===== */
     .empty-state {
       padding: 3rem 2rem;
       text-align: center;
@@ -1332,7 +1332,7 @@
       font-size: 0.85rem;
     }
 
-    /* MODAL */
+    /* ===== MODAL ===== */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -1438,7 +1438,7 @@
       opacity: 0.7;
     }
 
-    /* TOAST */
+    /* ===== TOAST ===== */
     .toast-container {
       position: fixed;
       top: 80px;
@@ -1510,7 +1510,7 @@
       }
     }
 
-    /* SPINNER */
+    /* ===== SPINNER ===== */
     .spinner {
       width: 18px;
       height: 18px;
@@ -1544,7 +1544,7 @@
       border-top-color: var(--accent);
     }
 
-    /* SUCCESS OVERLAY */
+    /* ===== SUCCESS OVERLAY ===== */
     .success-overlay {
       display: none;
       position: fixed;
@@ -1608,7 +1608,7 @@
       margin-bottom: 1.25rem;
     }
 
-    /* TABLE FOOTER */
+    /* ===== TABLE FOOTER ===== */
     .table-footer {
       padding: 0.85rem 1.5rem;
       border-top: 1px solid var(--border);
@@ -1622,7 +1622,7 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
-    /* RESPONSIVE */
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
       .navbar {
         padding: 0 1rem;
@@ -1794,7 +1794,6 @@
                   <th>Teknisi</th>
                   <th>Tgl Pengajuan</th>
                   <th>No. Order</th>
-                  <th>Order ke Pabrik</th>
                   <th>No. Service</th>
                   <th>Type (IDNO)</th>
                   <th>No. Serie</th>
@@ -1806,6 +1805,7 @@
                   <th>Nama Konsumen</th>
                   <th>No. HP</th>
                   <th>Tgl Order</th>
+                  <th>Order ke Pabrik</th>   <!-- DIPINDAH KE SINI -->
                   <th>Keterangan</th>
                   <th>Aksi</th>
                 </tr>
@@ -1840,7 +1840,6 @@
                   <th>Teknisi</th>
                   <th>Tgl Pengajuan</th>
                   <th>No. Order</th>
-                  <th>Order ke Pabrik</th>
                   <th>No. Service</th>
                   <th>Type (IDNO)</th>
                   <th>No. Serie</th>
@@ -1852,6 +1851,7 @@
                   <th>Nama Konsumen</th>
                   <th>No. HP</th>
                   <th>Tgl Order</th>
+                  <th>Order ke Pabrik</th>   <!-- DIPINDAH KE SINI -->
                   <th>Keterangan</th>
                   <th>Aksi</th>
                 </tr>
@@ -1884,7 +1884,6 @@
             <div class="form-group"><label class="form-label">Type (IDNO) <span class="required">*</span></label><input class="form-input" type="text" name="TYPE (IDNO)" required /></div>
             <div class="form-group"><label class="form-label">No. Serie</label><input class="form-input" type="text" name="NO. SERIE" /></div>
             <div class="form-group"><label class="form-label">No Gudang</label><input class="form-input" type="text" name="NO GUDANG" /></div>
-            <div class="form-group"><label class="form-label">Order ke Pabrik</label><input class="form-input" type="text" name="ORDER KE PABRIK" placeholder="Opsional" /></div>
             <div class="form-group"><label class="form-label">Nama Part <span class="required">*</span></label><input class="form-input" type="text" name="NAMA PART" required /></div>
             <div class="form-group"><label class="form-label">QTY <span class="required">*</span></label><input class="form-input" type="number" name="QTY" min="1" required /></div>
             <div class="form-group"><label class="form-label">Prod. <span class="required">*</span></label><select class="form-select" name="PROD." required><option value="">-- Pilih --</option><option value="AV">AV</option><option value="HA">HA</option><option value="EV">EV</option></select></div>
@@ -1913,7 +1912,6 @@
         <div style="background:rgba(128,128,128,0.1);border-radius:var(--radius);padding:0.85rem 1rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap;"><span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--accent);font-weight:700;" id="modalOrderNo"></span><span style="color:var(--text-muted);">|</span><span style="font-size:0.78rem;color:var(--text-secondary);" id="modalPartInfo"></span></div>
         <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="modalStatus"><option value="PENDING">PENDING</option><option value="PROSES">PROSES</option><option value="READY">READY</option><option value="FINISH">FINISH</option></select></div>
         <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Tgl Order</span></label><input class="form-input" type="date" id="modalTglOrder" /></div>
-        <!-- FIELD No. Order DIHAPUS -->
         <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Order ke Pabrik</span></label><input class="form-input" type="text" id="modalOrderPabrik" /></div>
         <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Keterangan</span></label><textarea class="form-textarea" id="modalKeterangan"></textarea></div>
       </div>
@@ -2542,7 +2540,7 @@
       input.addEventListener('blur', save);
     }
 
-    // ===== RENDER AKTIF =====
+    // ===== RENDER AKTIF (urutan kolom baru) =====
     function renderAktifTable() {
       var tb = document.getElementById('tableBody'),
         es = document.getElementById('emptyState'),
@@ -2593,9 +2591,6 @@
           '<td class="editable-cell" ondblclick="editNoOrder(\'' + o._docId +
           '\', this)" title="Double‑klik untuk edit" style="color:var(--accent);font-weight:600;cursor:text;">' +
           escapeHtml(no || '-') + '</td>' +
-          '<td class="editable-cell" ondblclick="editOrderPabrik(\'' + o._docId +
-          '\', this)" title="Double‑klik untuk edit" style="cursor:text;">' +
-          escapeHtml(op || '-') + '</td>' +
           '<td>' + escapeHtml(o['NO. SERVICE CASE'] || '') + '</td>' +
           '<td>' + escapeHtml(o['TYPE (IDNO)'] || '') + '</td>' +
           '<td>' + escapeHtml(o['NO. SERIE'] || '') + '</td>' +
@@ -2607,6 +2602,9 @@
           '<td class="name-cell">' + escapeHtml(o['NAMA KONSUMEN'] || '') + '</td>' +
           '<td>' + escapeHtml(o['NO. HP'] || '') + '</td>' +
           '<td class="editable-cell" ' + da + '>' + formatDateDisplay(to) + '</td>' +
+          '<td class="editable-cell" ondblclick="editOrderPabrik(\'' + o._docId +
+          '\', this)" title="Double‑klik untuk edit" style="cursor:text;">' +
+          escapeHtml(op || '-') + '</td>' +
           '<td class="editable-cell" ' + da + '>' + escapeHtml(k || '-') + '</td>' +
           '<td><div class="action-btns"><button class="action-btn" ' + da +
           '><i class="fas fa-pen"></i></button><button class="action-btn locked" title="Hanya FINISH bisa dihapus"><i class="fas fa-trash"></i></button></div></td>' +
@@ -2621,7 +2619,7 @@
       }
     }
 
-    // ===== RENDER RIWAYAT =====
+    // ===== RENDER RIWAYAT (urutan kolom baru) =====
     function renderRiwayatTable() {
       var tb = document.getElementById('riwayatBody'),
         es = document.getElementById('emptyRiwayat'),
@@ -2674,10 +2672,6 @@
           (canEdit ? 'ondblclick="editNoOrder(\'' + o._docId + '\', this)" title="Double‑klik untuk edit"' : '') +
           ' style="' + (canEdit ? 'cursor:text;' : '') + 'color:var(--info);font-weight:600;">' +
           escapeHtml(no || '-') + '</td>' +
-          '<td class="' + cellClass + '" ' +
-          (canEdit ? 'ondblclick="editOrderPabrik(\'' + o._docId + '\', this)" title="Double‑klik untuk edit"' : '') +
-          ' style="' + (canEdit ? 'cursor:text;' : '') + '">' +
-          escapeHtml(op || '-') + '</td>' +
           '<td>' + escapeHtml(o['NO. SERVICE CASE'] || '') + '</td>' +
           '<td>' + escapeHtml(o['TYPE (IDNO)'] || '') + '</td>' +
           '<td>' + escapeHtml(o['NO. SERIE'] || '') + '</td>' +
@@ -2690,6 +2684,10 @@
           '<td>' + escapeHtml(o['NO. HP'] || '') + '</td>' +
           '<td class="' + cellClass + '" ' + editAction + o._docId + editActionClose + '>' + formatDateDisplay(to) +
           '</td>' +
+          '<td class="' + cellClass + '" ' +
+          (canEdit ? 'ondblclick="editOrderPabrik(\'' + o._docId + '\', this)" title="Double‑klik untuk edit"' : '') +
+          ' style="' + (canEdit ? 'cursor:text;' : '') + '">' +
+          escapeHtml(op || '-') + '</td>' +
           '<td class="' + cellClass + '" ' + editAction + o._docId + editActionClose + '>' + escapeHtml(k || '-') +
           '</td>' +
           '<td><div class="action-btns"><button class="action-btn' + btnEditClass + '" ' + editAction + o._docId +
@@ -2741,7 +2739,6 @@
       document.getElementById('modalRowIndex').value = docId;
       document.getElementById('modalStatus').value = (o['STATUS'] || 'PENDING').toUpperCase();
       document.getElementById('modalTglOrder').value = o['TGL Order'] || '';
-      // No. Order tidak diisi karena tidak ada field
       document.getElementById('modalOrderPabrik').value = o['ORDER KE PABRIK'] || '';
       document.getElementById('modalKeterangan').value = o['Keterangan Pemenuhan'] || '';
       document.getElementById('modalOrderNo').textContent = '#' + (o['No. Order'] || '-');
@@ -2754,7 +2751,6 @@
       var updates = {
         'STATUS': document.getElementById('modalStatus').value,
         'TGL Order': document.getElementById('modalTglOrder').value,
-        // No. Order tidak diupdate
         'ORDER KE PABRIK': document.getElementById('modalOrderPabrik').value,
         'Keterangan Pemenuhan': document.getElementById('modalKeterangan').value
       };
@@ -2809,7 +2805,7 @@
       });
     }
 
-    // ===== EXCEL =====
+    // ===== EXCEL (urutan kolom baru) =====
     function downloadExcel(src) {
       var fd = src === 'riwayat' ? getRiwayatOrders() : getFilteredAktif();
       if (fd.length === 0) { showToast('Tidak ada data!', 'error'); return; }
@@ -2818,17 +2814,17 @@
       b.innerHTML = '<div class="spinner"></div>';
       try {
         var eh = ['No', 'Status', 'Teknisi', 'Tgl Pengajuan',
-          'No. Order', 'Order ke Pabrik',
-          'No. Service', 'Type (IDNO)', 'No. Serie', 'No Gudang',
-          'Nama Part', 'QTY', 'Prod.', 'Layanan', 'Nama Konsumen', 'No. HP', 'Tgl Order', 'Keterangan'
+          'No. Order', 'No. Service', 'Type (IDNO)', 'No. Serie', 'No Gudang',
+          'Nama Part', 'QTY', 'Prod.', 'Layanan', 'Nama Konsumen', 'No. HP', 'Tgl Order',
+          'Order ke Pabrik', 'Keterangan'
         ];
         var rows = fd.map(function(o, i) {
           return [i + 1, o['STATUS'] || '', o['TEKNISI'] || '', formatDateDisplay(o['TGL PENGAJUAN ORD'] || ''),
-            o['No. Order'] || '', o['ORDER KE PABRIK'] || '',
+            o['No. Order'] || '',
             o['NO. SERVICE CASE'] || '', o['TYPE (IDNO)'] || '', o['NO. SERIE'] || '', o['NO GUDANG'] || '',
             o['NAMA PART'] || '', o['QTY'] || '', o['PROD.'] || '', o['LAYANAN'] || '',
             o['NAMA KONSUMEN'] || '', o['NO. HP'] || '', formatDateDisplay(o['TGL Order'] || ''),
-            o['Keterangan Pemenuhan'] || ''
+            o['ORDER KE PABRIK'] || '', o['Keterangan Pemenuhan'] || ''
           ];
         });
         var wb = XLSX.utils.book_new(),
@@ -2901,7 +2897,7 @@
     document.getElementById('inputModal').addEventListener('click', function(e) { if (e.target === this) closeInputModal(); });
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
 
-    console.log('✅ Aplikasi siap - No. Order dihilangkan dari modal edit.');
+    console.log('✅ Aplikasi siap - Order ke Pabrik dipindah setelah Tgl Order.');
   </script>
 </body>
 </html>
