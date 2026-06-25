@@ -1161,7 +1161,7 @@
       if (filtered.length === 0) { showToast('Tidak ada data untuk dicetak PDF', 'error'); return; }
 
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('portrait', 'mm', 'a4');
+      const doc = new jsPDF('landscape', 'mm', 'a4');
       const pageWidth = doc.internal.pageSize.getWidth();
 
       // Header
@@ -1179,7 +1179,7 @@
         totalModal += h.totalModal || 0;
       });
 
-      // Tabel data
+      // Tabel data dengan lebar kolom yang cukup agar teks tidak membelit
       const rows = filtered.map(h => [
         h.date || new Date(h.timestamp).toLocaleString('id-ID'),
         h.productId || '-',
@@ -1199,12 +1199,12 @@
         bodyStyles: { fontSize: 8, cellPadding: 1.5 },
         columnStyles: {
           0: { cellWidth: 30, halign: 'center' },
-          1: { cellWidth: 20, halign: 'center' },
-          2: { cellWidth: 40 },
-          3: { cellWidth: 25, halign: 'center' },
-          4: { cellWidth: 18, halign: 'center' },
-          5: { cellWidth: 28, halign: 'right' },
-          6: { cellWidth: 28, halign: 'right' }
+          1: { cellWidth: 22, halign: 'center' },
+          2: { cellWidth: 45 },
+          3: { cellWidth: 28, halign: 'center' },
+          4: { cellWidth: 20, halign: 'center' },
+          5: { cellWidth: 30, halign: 'right' },
+          6: { cellWidth: 32, halign: 'right' }
         },
         margin: { left: 10, right: 10 },
         tableWidth: 'auto'
@@ -1357,7 +1357,7 @@
       if (filtered.length === 0) { showToast('Tidak ada data untuk dicetak PDF', 'error'); return; }
 
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('portrait', 'mm', 'a4');
+      const doc = new jsPDF('landscape', 'mm', 'a4');
       const pageWidth = doc.internal.pageSize.getWidth();
 
       // Header
@@ -1375,7 +1375,7 @@
         totalModal += s.totalModal || 0;
       });
 
-      // Tabel data
+      // Tabel data dengan lebar kolom yang cukup
       const rows = filtered.map(s => [
         s.date || new Date(s.timestamp).toLocaleString('id-ID'),
         s.productId || '-',
@@ -1394,11 +1394,11 @@
         bodyStyles: { fontSize: 8, cellPadding: 1.5 },
         columnStyles: {
           0: { cellWidth: 30, halign: 'center' },
-          1: { cellWidth: 20, halign: 'center' },
-          2: { cellWidth: 45 },
-          3: { cellWidth: 18, halign: 'center' },
-          4: { cellWidth: 35 },
-          5: { cellWidth: 28, halign: 'right' }
+          1: { cellWidth: 22, halign: 'center' },
+          2: { cellWidth: 50 },
+          3: { cellWidth: 20, halign: 'center' },
+          4: { cellWidth: 40 },
+          5: { cellWidth: 32, halign: 'right' }
         },
         margin: { left: 10, right: 10 },
         tableWidth: 'auto'
