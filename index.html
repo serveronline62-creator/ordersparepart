@@ -15,7 +15,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js">
   </script>
   <style>
-    /* ===== CSS LENGKAP (sama seperti sebelumnya, tidak diubah) ===== */
+    /* ===== CSS LENGKAP (sama seperti sebelumnya) ===== */
     :root,
     [data-theme="dark"] {
       --bg-primary: #0b1120;
@@ -1805,7 +1805,8 @@
                   <th>No. HP</th>
                   <th>Tgl Order</th>
                   <th>TGL TERIMA PART</th>
-                  <th>Jumlah</th>
+                  <th>Jumlah Hari</th>
+                  <!-- HEADER DIUBAH -->
                   <th>Order ke Pabrik</th>
                   <th>Keterangan</th>
                   <th>Aksi</th>
@@ -1852,7 +1853,8 @@
                   <th>No. HP</th>
                   <th>Tgl Order</th>
                   <th>TGL TERIMA PART</th>
-                  <th>Jumlah</th>
+                  <th>Jumlah Hari</th>
+                  <!-- HEADER DIUBAH -->
                   <th>Order ke Pabrik</th>
                   <th>Keterangan</th>
                   <th>Aksi</th>
@@ -1916,7 +1918,7 @@
         <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="modalStatus"><option value="PENDING">PENDING</option><option value="PROSES">PROSES</option><option value="READY">READY</option><option value="FINISH">FINISH</option></select></div>
         <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Tgl Order</span></label><input class="form-input" type="date" id="modalTglOrder" /></div>
         <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> TGL TERIMA PART</span></label><input class="form-input" type="date" id="modalTglTerimaPart" onchange="editHitungJumlahHari()" /></div>
-        <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Jumlah (hari)</span></label><input class="form-input" type="number" id="modalJumlah" readonly style="background:var(--bg-card);cursor:default;font-weight:700;color:var(--accent);" /></div>
+        <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Jumlah Hari</span></label><input class="form-input" type="text" id="modalJumlah" readonly style="background:var(--bg-card);cursor:default;font-weight:700;color:var(--accent);" /></div>
         <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Order ke Pabrik</span></label><input class="form-input" type="text" id="modalOrderPabrik" /></div>
         <div class="form-group"><label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Keterangan</span></label><textarea class="form-textarea" id="modalKeterangan"></textarea></div>
       </div>
@@ -2038,7 +2040,7 @@
       var d2 = new Date(tglTerima);
       var diffTime = Math.abs(d2 - d1);
       var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      target.value = diffDays;
+      target.value = diffDays + ' hari';
     }
 
     // ===== AUTH FUNCTIONS =====
@@ -2335,6 +2337,11 @@
       return d;
     }
 
+    function formatJumlahHari(val) {
+      if (!val) return '-';
+      return val + ' hari';
+    }
+
     function debouncedSearch() {
       clearTimeout(searchDebounceTimer);
       searchDebounceTimer = setTimeout(renderAktifTable, 150);
@@ -2409,7 +2416,6 @@
       }
       if (parseInt(d['QTY']) < 1) { showToast('QTY harus minimal 1!', 'error'); return; }
 
-      // Karena field TGL TERIMA PART dan JUMLAH tidak ada di form input, kita set kosong
       var tglTerima = '';
       var jumlah = '';
 
@@ -2511,7 +2517,7 @@
         };
         db.collection(ORDERS_COL).doc(docId).update(updates)
           .then(function() {
-            showToast('TGL TERIMA PART & Jumlah berhasil diupdate!', 'success');
+            showToast('TGL TERIMA PART & Jumlah Hari berhasil diupdate!', 'success');
             var formatted = newValue ? formatDateDisplay(newValue) : '-';
             td.textContent = formatted;
             if (order) {
@@ -2656,7 +2662,7 @@
           '<td class="editable-cell" ondblclick="editTglTerimaPart(\'' + o._docId +
           '\', this)" title="Double‑klik untuk edit" style="cursor:text;">' +
           formatDateDisplay(ttp) + '</td>' +
-          '<td style="font-weight:700;color:var(--accent);">' + escapeHtml(jml || '-') + '</td>' +
+          '<td style="font-weight:700;color:var(--accent);">' + escapeHtml(formatJumlahHari(jml)) + '</td>' +
           '<td class="editable-cell" ondblclick="editOrderPabrik(\'' + o._docId +
           '\', this)" title="Double‑klik untuk edit" style="cursor:text;">' +
           escapeHtml(op || '-') + '</td>' +
@@ -2740,7 +2746,7 @@
           (canEdit ? 'ondblclick="editTglTerimaPart(\'' + o._docId + '\', this)" title="Double‑klik untuk edit"' : '') +
           ' style="' + (canEdit ? 'cursor:text;' : '') + '">' +
           formatDateDisplay(ttp) + '</td>' +
-          '<td style="font-weight:700;color:var(--info);">' + escapeHtml(jml || '-') + '</td>' +
+          '<td style="font-weight:700;color:var(--info);">' + escapeHtml(formatJumlahHari(jml)) + '</td>' +
           '<td class="' + cellClass + '" ' +
           (canEdit ? 'ondblclick="editOrderPabrik(\'' + o._docId + '\', this)" title="Double‑klik untuk edit"' : '') +
           ' style="' + (canEdit ? 'cursor:text;' : '') + '">' +
@@ -2797,7 +2803,8 @@
       document.getElementById('modalStatus').value = (o['STATUS'] || 'PENDING').toUpperCase();
       document.getElementById('modalTglOrder').value = o['Tgl Order'] || '';
       document.getElementById('modalTglTerimaPart').value = o['TGL TERIMA PART'] || '';
-      document.getElementById('modalJumlah').value = o['JUMLAH'] || '';
+      var jml = o['JUMLAH'] || '';
+      document.getElementById('modalJumlah').value = jml ? jml + ' hari' : '';
       document.getElementById('modalOrderPabrik').value = o['ORDER KE PABRIK'] || '';
       document.getElementById('modalKeterangan').value = o['Keterangan Pemenuhan'] || '';
       document.getElementById('modalOrderNo').textContent = '#' + (o['No. Order'] || '-');
@@ -2811,7 +2818,7 @@
       var order = allOrders.find(function(o) { return o._docId === docId; });
       var tglPengajuan = order ? order['TGL PENGAJUAN ORD'] : '';
 
-      var jumlah = document.getElementById('modalJumlah').value;
+      var jumlah = '';
       if (tglPengajuan && tglTerima) {
         var d1 = new Date(tglPengajuan);
         var d2 = new Date(tglTerima);
@@ -2890,14 +2897,14 @@
         var eh = ['No', 'Status', 'Teknisi', 'Tgl Pengajuan',
           'No. Service', 'Type (IDNO)', 'No. Serie', 'No Gudang',
           'Nama Part', 'QTY', 'Prod.', 'Layanan', 'Nama Konsumen', 'No. HP',
-          'Tgl Order', 'TGL TERIMA PART', 'Jumlah', 'Order ke Pabrik', 'Keterangan'
+          'Tgl Order', 'TGL TERIMA PART', 'Jumlah Hari', 'Order ke Pabrik', 'Keterangan'
         ];
         var rows = fd.map(function(o, i) {
           return [i + 1, o['STATUS'] || '', o['TEKNISI'] || '', formatDateDisplay(o['TGL PENGAJUAN ORD'] || ''),
             o['NO. SERVICE CASE'] || '', o['TYPE (IDNO)'] || '', o['NO. SERIE'] || '', o['NO GUDANG'] || '',
             o['NAMA PART'] || '', o['QTY'] || '', o['PROD.'] || '', o['LAYANAN'] || '',
             o['NAMA KONSUMEN'] || '', o['NO. HP'] || '', formatDateDisplay(o['Tgl Order'] || ''),
-            formatDateDisplay(o['TGL TERIMA PART'] || ''), o['JUMLAH'] || '',
+            formatDateDisplay(o['TGL TERIMA PART'] || ''), o['JUMLAH'] ? o['JUMLAH'] + ' hari' : '',
             o['ORDER KE PABRIK'] || '', o['Keterangan Pemenuhan'] || ''
           ];
         });
@@ -2971,7 +2978,7 @@
     document.getElementById('inputModal').addEventListener('click', function(e) { if (e.target === this) closeInputModal(); });
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
 
-    console.log('✅ Aplikasi siap - Informasi Penerimaan Part disembunyikan di Input Order.');
+    console.log('✅ Aplikasi siap - Kolom Jumlah diubah menjadi Jumlah Hari dengan satuan hari.');
   </script>
 </body>
 </html>
