@@ -1161,10 +1161,10 @@
       if (filtered.length === 0) { showToast('Tidak ada data untuk dicetak PDF', 'error'); return; }
 
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('landscape', 'mm', 'a4');
+      const doc = new jsPDF('portrait', 'mm', 'a4');
       const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
 
+      // Header
       doc.setFontSize(16);
       doc.text('Riwayat Produk Masuk', pageWidth/2, 15, { align: 'center' });
       doc.setFontSize(10);
@@ -1172,6 +1172,14 @@
       doc.text(dateLabel, pageWidth/2, 22, { align: 'center' });
       doc.text(`Total Data: ${filtered.length}`, pageWidth/2, 29, { align: 'center' });
 
+      // Hitung total
+      let totalQty = 0, totalModal = 0;
+      filtered.forEach(h => {
+        totalQty += h.qty || 0;
+        totalModal += h.totalModal || 0;
+      });
+
+      // Tabel data
       const rows = filtered.map(h => [
         h.date || new Date(h.timestamp).toLocaleString('id-ID'),
         h.productId || '-',
@@ -1184,22 +1192,31 @@
 
       doc.autoTable({
         startY: 35,
-        head: [['Tanggal', 'ID Produk', 'Nama Produk', 'Kategori', 'Jumlah Masuk', 'Harga Modal', 'Total Modal']],
+        head: [['Tanggal', 'ID Produk', 'Nama Produk', 'Kategori', 'Jml Masuk', 'Harga Modal', 'Total Modal']],
         body: rows,
         theme: 'striped',
-        headStyles: { fillColor: [230, 57, 70], textColor: [255,255,255], fontSize: 8 },
-        bodyStyles: { fontSize: 7 },
+        headStyles: { fillColor: [230, 57, 70], textColor: [255,255,255], fontSize: 8, halign: 'center' },
+        bodyStyles: { fontSize: 8, cellPadding: 1.5 },
         columnStyles: {
-          0: { cellWidth: 35 },
-          1: { cellWidth: 25 },
+          0: { cellWidth: 30, halign: 'center' },
+          1: { cellWidth: 20, halign: 'center' },
           2: { cellWidth: 40 },
-          3: { cellWidth: 25 },
-          4: { cellWidth: 25 },
-          5: { cellWidth: 30 },
-          6: { cellWidth: 30 }
+          3: { cellWidth: 25, halign: 'center' },
+          4: { cellWidth: 18, halign: 'center' },
+          5: { cellWidth: 28, halign: 'right' },
+          6: { cellWidth: 28, halign: 'right' }
         },
-        margin: { left: 10, right: 10 }
+        margin: { left: 10, right: 10 },
+        tableWidth: 'auto'
       });
+
+      // Total di bawah tabel
+      const finalY = doc.lastAutoTable.finalY + 10;
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'bold');
+      doc.text(`Total Jumlah Masuk: ${totalQty}`, 14, finalY);
+      doc.text(`Total Seluruh Modal: ${formatRp(totalModal)}`, 14, finalY + 6);
+      doc.setFont(undefined, 'normal');
 
       const now = new Date(); const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
       doc.save(`Riwayat_Produk_Masuk_${dateStr}.pdf`);
@@ -1340,10 +1357,10 @@
       if (filtered.length === 0) { showToast('Tidak ada data untuk dicetak PDF', 'error'); return; }
 
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('landscape', 'mm', 'a4');
+      const doc = new jsPDF('portrait', 'mm', 'a4');
       const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
 
+      // Header
       doc.setFontSize(16);
       doc.text('Pengeluaran Barang', pageWidth/2, 15, { align: 'center' });
       doc.setFontSize(10);
@@ -1351,6 +1368,14 @@
       doc.text(dateLabel, pageWidth/2, 22, { align: 'center' });
       doc.text(`Total Data: ${filtered.length}`, pageWidth/2, 29, { align: 'center' });
 
+      // Hitung total
+      let totalQty = 0, totalModal = 0;
+      filtered.forEach(s => {
+        totalQty += s.qty || 0;
+        totalModal += s.totalModal || 0;
+      });
+
+      // Tabel data
       const rows = filtered.map(s => [
         s.date || new Date(s.timestamp).toLocaleString('id-ID'),
         s.productId || '-',
@@ -1362,21 +1387,30 @@
 
       doc.autoTable({
         startY: 35,
-        head: [['Tanggal', 'ID Produk', 'Nama Produk', 'Jumlah Keluar', 'Keterangan', 'Total Modal']],
+        head: [['Tanggal', 'ID Produk', 'Nama Produk', 'Jml Keluar', 'Keterangan', 'Total Modal']],
         body: rows,
         theme: 'striped',
-        headStyles: { fillColor: [230, 57, 70], textColor: [255,255,255], fontSize: 8 },
-        bodyStyles: { fontSize: 7 },
+        headStyles: { fillColor: [230, 57, 70], textColor: [255,255,255], fontSize: 8, halign: 'center' },
+        bodyStyles: { fontSize: 8, cellPadding: 1.5 },
         columnStyles: {
-          0: { cellWidth: 35 },
-          1: { cellWidth: 25 },
-          2: { cellWidth: 40 },
-          3: { cellWidth: 20 },
+          0: { cellWidth: 30, halign: 'center' },
+          1: { cellWidth: 20, halign: 'center' },
+          2: { cellWidth: 45 },
+          3: { cellWidth: 18, halign: 'center' },
           4: { cellWidth: 35 },
-          5: { cellWidth: 30 }
+          5: { cellWidth: 28, halign: 'right' }
         },
-        margin: { left: 10, right: 10 }
+        margin: { left: 10, right: 10 },
+        tableWidth: 'auto'
       });
+
+      // Total di bawah tabel
+      const finalY = doc.lastAutoTable.finalY + 10;
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'bold');
+      doc.text(`Total Jumlah Keluar: ${totalQty}`, 14, finalY);
+      doc.text(`Total Seluruh Modal: ${formatRp(totalModal)}`, 14, finalY + 6);
+      doc.setFont(undefined, 'normal');
 
       const now = new Date(); const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
       doc.save(`Pengeluaran_Barang_${dateStr}.pdf`);
